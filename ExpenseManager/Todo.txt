@@ -1,0 +1,6 @@
+﻿- Add transaction and category editing UI
+- Make transaction DataGridView work
+- Make Categories DataGridView work
+- Make CSV exporter/importer
+- Add IObjectReconstructor interface to ExpenseManager.SQLite and get rid of Category/Transaction.FromSqlObjects
+- Get rid of Config completely, or make it static - done, made it static

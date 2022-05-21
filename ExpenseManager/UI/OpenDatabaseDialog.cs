@@ -26,6 +26,13 @@ public partial class OpenDatabaseDialog : Form
         return base.ShowDialog();
     }
 
+    protected override void OnShown(EventArgs e) {
+        UpdateButtons();
+        AccountsListView.SelectedIndexChanged += AccountsListView_SelectedIndexChanged;
+    }
+
+    private void AccountsListView_SelectedIndexChanged(object? sender, EventArgs e) => UpdateButtons();
+
     private void OnCreateNewAccount(object sender, EventArgs e) {
         if (textboxDialog.ShowDialog() == DialogResult.OK) {
             databaseManager.CreateNewUser(textboxDialog.Text);
@@ -54,5 +61,22 @@ public partial class OpenDatabaseDialog : Form
     private void OnAccountListViewDoubleClick(object sender, EventArgs e) {
         if (AccountsListView.SelectedIndex >= 0)
             Finish(DialogResult.OK, (string)AccountsListView.SelectedItem);
+    }
+
+    private void DeleteUserButton_Click(object sender, EventArgs e) {
+        string username = (string)AccountsListView.SelectedItem;
+        if (MessageBox.Show($"Delete account {username}?\nThis action is irreversible!", "Are you sure?", MessageBoxButtons.OKCancel) == DialogResult.OK) {
+            if (databaseManager.IsUserOpen(username))
+                MessageBox.Show("Cannot delete this accout as it is currently open");
+            else {
+                databaseManager.DeleteUser(username);
+                AccountsListView.Items.Remove(username);
+            }
+        }
+    }
+
+    private void UpdateButtons() {
+        DeleteUserButton.Enabled = AccountsListView.SelectedIndices.Count > 0;
+        OpenUserButton.Enabled = AccountsListView.SelectedIndices.Count > 0;
     }
 }

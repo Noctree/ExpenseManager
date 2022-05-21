@@ -1,13 +1,13 @@
 ﻿using ExpenseManager.SQLite;
 
 namespace ExpenseManager.DataObjects.Conversion;
-public class TransactionDeconstructor : IObjectSqlDeconstructor<Transaction>
+public class SqlTransactionDeconstructor : IObjectSqlDeconstructor<Transaction>
 {
     public IReadOnlyList<string> ColumnNames { get; }
 
     public int FieldCount => 4;
 
-    public TransactionDeconstructor(IEnumerable<string> columnNames) {
+    public SqlTransactionDeconstructor(IEnumerable<string> columnNames) {
         ColumnNames = columnNames.ToList().AsReadOnly();
     }
 

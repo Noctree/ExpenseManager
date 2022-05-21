@@ -10,6 +10,7 @@ public partial class MainForm : Form
     private bool close;
     private OpenDatabaseDialog openDatabaseDialog;
     private DatabaseManager databaseManager;
+    private ImportAccountDialog importAccountDialog;
     private Dictionary<string, (AccountExpenses, int)> openDatabases = new();
     public bool BackendInitialized { get; private set; }
     public MainForm() {
@@ -23,14 +24,24 @@ public partial class MainForm : Form
 
     private void OnUIInitialized(object sender, EventArgs e) {
         OpenAccountButton.Enabled = false;
-        RunTaskAsyncWithProgressBar("Initialize", ProgressBarStyle.Marquee, InitializeBackend, (t) => OpenAccountButton.Enabled = true);
+        RunTaskAsyncWithProgressBar("Initialize",
+            ProgressBarStyle.Marquee,
+            InitializeBackend,
+            _ => OpenAccountButton.Enabled = true);
     }
 
     private void OnOpenAccount(object sender, EventArgs e) {
         if (openDatabaseDialog.ShowDialog() == DialogResult.OK) {
             var username = openDatabaseDialog.SelectedUser;
-            RunTaskAsyncWithProgressBar($"Opening {username}...", ProgressBarStyle.Marquee, (_) => OpenDatabase(username), null);
+            OpenDatabase(username);
         }
+    }
+
+    private void OpenDatabase(string username) {
+        RunTaskAsyncWithProgressBar($"Opening {username}...",
+            ProgressBarStyle.Marquee,
+            _ => OpenDatabaseTask(username),
+            null);
     }
 
     private void InitializeBackend(ProgressBarStripDisplay.ProgressBarContainer progressBar) {
@@ -39,7 +50,7 @@ public partial class MainForm : Form
         BackendInitialized = true;
     }
 
-    private void OpenDatabase(string username) {
+    private void OpenDatabaseTask(string username) {
         var dao = databaseManager.OpenUser(username);
         var accountUI = new AccountExpenses(dao);
         Task.Run(accountUI.PreloadDataAsync).Wait();
@@ -70,13 +81,7 @@ public partial class MainForm : Form
     private void RunTaskAsyncWithProgressBar(string taskName, ProgressBarStyle progressBarStyle, Action<ProgressBarStripDisplay.ProgressBarContainer> action, Action<Task>? callback) {
         var container = StatusBarContainer.AddProgressBar(taskName, progressBarStyle);
         var task = Task.Run(() => action(container));
-        task = task.ContinueWith((task) => InvokeSafely(() => container.Dispose()));
-        if (callback is not null)
-            task.ContinueWith((t) => InvokeSafely(callback, t));
-    }
-
-    private void RunTaskAsync(Action action, Action<Task>? callback) {
-        var task = Task.Run(action);
+        task = task.ContinueWith((_) => InvokeSafely(() => container.Dispose()));
         if (callback is not null)
             task.ContinueWith((t) => InvokeSafely(callback, t));
     }
@@ -124,10 +129,44 @@ public partial class MainForm : Form
             return;
         var tab = AccountTabsContainer.SelectedTab;
         var dao = openDatabases[tab.Text].Item1.DAO;
-        RunTaskAsyncWithProgressBar($"Exporting {tab.Name}", ProgressBarStyle.Marquee, (_) => ExportDatabaseAsync(dao, ExportDatabaseDialog.FileName).Wait(), null);
+        RunTaskAsyncWithProgressBar($"Exporting {tab.Name}",
+            ProgressBarStyle.Marquee,
+            (_) => ExpenseDaoExporter.ExportExpensesDaoAsync(ExportDatabaseDialog.FileName, dao).Wait(),
+            (task) => PostCsvExportCallback(task, dao.Name));
     }
 
-    private async Task ExportDatabaseAsync(ExpensesDAO dao, string path) {
-        await CSVExporter.ExportExpensesDaoAsync(path, dao);
+    private void PostCsvExportCallback(Task task, string username) {
+        if (task.Exception is not null) {
+            if (MessageBox.Show($"Failed to export account {username} as CSV due to an error.\n\n\n Do you want to view a technical description of the error?",
+                "Error",
+                MessageBoxButtons.YesNo) == DialogResult.Yes)
+                    MessageBox.Show(task.Exception.Message);
+        } else {
+            MessageBox.Show($"Account {username} exported as CSV successfully!", "Success");
+        }
+    }
+
+    private void ImportUserButton_Click(object sender, EventArgs e) {
+        if (importAccountDialog is null)
+            importAccountDialog = new ImportAccountDialog();
+        if (importAccountDialog.ShowDialog(databaseManager) != DialogResult.OK)
+            return;
+        RunTaskAsyncWithProgressBar($"Importing {importAccountDialog.AccountName}",
+            ProgressBarStyle.Marquee,
+            (_) => ExpenseDaoExporter.ImportExpensesDaoAsync(importAccountDialog.TransactionsFileName,
+                                                             importAccountDialog.CategoriesFileName,
+                                                             importAccountDialog.AccountName, databaseManager).Wait(),
+            task => PostImportUserCallback(task, importAccountDialog.AccountName));
+    }
+
+    private void PostImportUserCallback(Task task, string username) {
+        if (task.Exception is not null) {
+            if (MessageBox.Show($"Failed to import account {username} from CSV due to an error.\n\n\n Do you want to view a technical description of the error?",
+                "Error",
+                MessageBoxButtons.YesNo) == DialogResult.Yes)
+                MessageBox.Show(task.Exception.Message);
+        } else {
+            OpenDatabase(username);
+        }
     }
 }

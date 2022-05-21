@@ -31,10 +31,10 @@ public class ExpensesDAO : IDisposable
         var transactionTableDescriptor = new SqlTableDescriptor(new SqlDateOnly("date"), new SqlDecimal("amount"), new SqlInteger("category"), new SqlText("description"), new SqlPrimaryKey());
         categoriesTable = new SqlTable(new SQLiteConnection(dbConnection), CategoryTableName, categoryTableDescriptor);
         transactionsTable = new SqlTable(new SQLiteConnection(dbConnection), ExpensesTableName, transactionTableDescriptor);
-        CategoryDeconstructor = new CategoryDeconstructor(categoriesTable.ColumnNames.Take(3));
-        TransactionDeconstructor = new TransactionDeconstructor(transactionsTable.ColumnNames.Take(4));
-        CategoryReconstructor = new CategoryReconstructor();
-        TransactionReconstructor = new TransactionReconstructor();
+        CategoryDeconstructor = new SqlCategoryDeconstructor(categoriesTable.ColumnNames.Take(3));
+        TransactionDeconstructor = new SqlTransactionDeconstructor(transactionsTable.ColumnNames.Take(4));
+        CategoryReconstructor = new SqlCategoryReconstructor();
+        TransactionReconstructor = new SqlTransactionReconstructor();
 
         var globalDefaultCategory = Category.Default;
         if (categoriesTable.Create()) {

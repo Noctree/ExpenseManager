@@ -16,7 +16,7 @@ public partial class OpenDatabaseDialog : Form
         textboxDialog = new TextboxDialog() {
             Title = "New Account Name",
             InvalidInputMessage = "Username already taken",
-            InputVerifier = (username) => !databaseManager.ContainsUser(username)
+            InputVerifier = (username) => !databaseManager.UserExists(username)
         };
         InitializeComponent();
     }

@@ -22,7 +22,7 @@ internal static class Program
     private static void GenerateExampleDatabase() {
         var username = "Example";
         var manager = new DatabaseManager(DatabasePath);
-        if (manager.ContainsUser(username))
+        if (manager.UserExists(username))
             return;
         manager.CreateNewUser(username);
         var dao = manager.OpenUser(username);
@@ -33,7 +33,7 @@ internal static class Program
     private static void GenerateExampleDatabaseHuge() {
         var username = "Big Data";
         var manager = new DatabaseManager(DatabasePath);
-        if (manager.ContainsUser(username))
+        if (manager.UserExists(username))
             return;
         manager.CreateNewUser(username);
         var dao = manager.OpenUser(username);

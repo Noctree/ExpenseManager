@@ -90,6 +90,7 @@
             this.ImportUserButton.Name = "ImportUserButton";
             this.ImportUserButton.Size = new System.Drawing.Size(47, 22);
             this.ImportUserButton.Text = "Import";
+            this.ImportUserButton.Click += new System.EventHandler(this.ImportUserButton_Click);
             // 
             // ExportUserButton
             // 
@@ -105,7 +106,7 @@
             // ExportAsCsvButton
             // 
             this.ExportAsCsvButton.Name = "ExportAsCsvButton";
-            this.ExportAsCsvButton.Size = new System.Drawing.Size(180, 22);
+            this.ExportAsCsvButton.Size = new System.Drawing.Size(111, 22);
             this.ExportAsCsvButton.Text = "As CSV";
             this.ExportAsCsvButton.Click += new System.EventHandler(this.ExportAsCsvButton_Click);
             // 

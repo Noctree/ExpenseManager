@@ -1,7 +1,7 @@
 ﻿using ExpenseManager.SQLite;
 
 namespace ExpenseManager.DataObjects.Conversion;
-public class CategoryReconstructor : IObjectSqlReconstructor<Category>
+public class SqlCategoryReconstructor : IObjectSqlReconstructor<Category>
 {
     private static readonly List<Type> ParamTypes = new() { typeof(string), typeof(Color), typeof(string), typeof(long) };
     public bool AllowsNull => false;

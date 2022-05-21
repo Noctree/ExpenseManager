@@ -1,7 +1,7 @@
 ﻿using ExpenseManager.SQLite;
 
 namespace ExpenseManager.DataObjects.Conversion;
-public class TransactionReconstructor : IObjectSqlReconstructor<Transaction>
+public class SqlTransactionReconstructor : IObjectSqlReconstructor<Transaction>
 {
     private static readonly List<Type> ParamTypes = new() { typeof(DateOnly), typeof(decimal), typeof(object), typeof(string), typeof(long) };
     public bool AllowsNull => true;

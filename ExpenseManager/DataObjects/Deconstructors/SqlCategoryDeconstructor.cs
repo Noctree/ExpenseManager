@@ -1,12 +1,12 @@
 ﻿using ExpenseManager.SQLite;
 
 namespace ExpenseManager.DataObjects.Conversion;
-public class CategoryDeconstructor : IObjectSqlDeconstructor<Category>
+public class SqlCategoryDeconstructor : IObjectSqlDeconstructor<Category>
 {
     public IReadOnlyList<string> ColumnNames { get; }
     public int FieldCount => 3;
 
-    public CategoryDeconstructor(IEnumerable<string> columnNames) {
+    public SqlCategoryDeconstructor(IEnumerable<string> columnNames) {
         ColumnNames = columnNames.ToList().AsReadOnly();
     }
 

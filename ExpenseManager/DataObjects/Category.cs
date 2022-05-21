@@ -3,7 +3,7 @@
 public class Category
 {
     private static readonly Color DEFAULT_COLOR = Color.White;
-    public static Category Default { get; } = new Category(string.Empty);
+    public static Category Default { get; } = new Category(string.Empty, id: 1);
     public long? Id { get; private set; }
     public string Name { get; set; }
     public Color Color { get; set; }

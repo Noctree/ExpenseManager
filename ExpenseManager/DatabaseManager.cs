@@ -36,18 +36,18 @@ public class DatabaseManager
         databases.AddRange(search);
     }
 
-    public bool ContainsUser(string username) => databases.Contains(username);
+    public bool UserExists(string username) => databases.Contains(username);
     public bool IsUserOpen(string username) => openUsers.ContainsKey(username);
 
     public void CreateNewUser(string username) {
-        if (ContainsUser(username))
+        if (UserExists(username))
             throw new ArgumentException("User already exists");
         databases.Add(username);
         SQLiteConnection.CreateFile(DatabasePathFromUsername(username));
     }
 
     public void DeleteUser(string username) {
-        if (ContainsUser(username)) {
+        if (UserExists(username)) {
             if (IsUserOpen(username))
                 CloseUser(username);
             foreach (var file in Directory.GetFiles(DatabaseDirectory, $"{username}.*"))
@@ -57,7 +57,7 @@ public class DatabaseManager
     }
 
     public ExpensesDAO OpenUser(string username) {
-        if (!ContainsUser(username))
+        if (!UserExists(username))
             throw new ArgumentException("User does not exist");
         if (IsUserOpen(username))
             throw new ArgumentException("User database is already opened");

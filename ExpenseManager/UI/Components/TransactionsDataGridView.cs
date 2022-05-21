@@ -2,7 +2,7 @@
 
 namespace ExpenseManager.UI.Components;
 
-public class TransactionsDataGridView : DataGridView
+public class TransactionsDataGridView : DataGridClassView<Transaction>
 {
     private static readonly DataGridViewTextBoxCell DefaultCellTemplate = new();
 
@@ -16,8 +16,6 @@ public class TransactionsDataGridView : DataGridView
         }
     }
     public bool Initialized { get; private set; }
-
-    public event Action? OnRowsFiltered;
 
     private void InitializeColumns() {
         Columns[0].CellTemplate = new DataGridViewGenericTextBoxCell<Transaction>() {
@@ -41,113 +39,28 @@ public class TransactionsDataGridView : DataGridView
         if (Initialized)
             return;
         ShowCellToolTips = false;
+
         InitializeColumns();
+        RegisterColumnSorters();
+        RegisterColumnValueSelectors();
+
         expensesDAO = dao;
         if (transactions is null)
             transactions = dao.GetTransactions();
         if (transactions.Count > 0) {
-            Rows.Add(transactions.Count);
-            for (int i = 0; i < Rows.Count; ++i) {
-                var cells = Rows[i].Cells;
-                for (int j = 0; j < cells.Count; ++j)
-                    cells[j].Value = j == 2 ? transactions[i].Category : transactions[i];
-            }
+            AddRows(transactions);
         }
-        Disposed += CleanUp;
+        transactions.Clear();
+        transactions = null;
         Initialized = true;
     }
 
-    public void AddTransaction(Transaction transaction) {
-        var objects = new object[Columns.Count];
-        for (int i = 0; i < objects.Length; ++i)
-            objects[i] = i == 2? transaction.Category : transaction;
-        Rows.Add(objects);
+    private void RegisterColumnSorters() {
+        RegisterColumnSortComparer(0, (a, b) => a.Date.CompareTo(b.Date));
+        RegisterColumnSortComparer(1, (a, b) => a.Amount.CompareTo(b.Amount));
     }
 
-    public void AddTransactions(IList<Transaction> transactions) {
-        var objects = new object[Columns.Count];
-        foreach (var transaction in transactions) {
-            for (int i = 0; i < objects.Length; ++i)
-                objects[i] = i == 2 ? transaction.Category : transaction;
-            Rows.Add(objects);
-        }
+    private void RegisterColumnValueSelectors() {
+        RegisterColumnValueSelector(2, transaction => transaction.Category);
     }
-
-    public void RemoveTransaction(Transaction transaction) {
-        for (int i = 0; i < Rows.Count; ++i)
-            if (((Transaction)Rows[i].Cells[0].Value) == transaction)
-                Rows.RemoveAt(i);
-    }
-
-    public void RemoveTransactions(IList<Transaction> transactions) {
-        var transactionDict = transactions.Select(transaction => transaction.Id ?? -1).ToHashSet();
-        var toBeRemoved = new List<int>();
-        for (int i = 0; i < Rows.Count; ++i) {
-            if (transactionDict.Contains(((Transaction)Rows[i].Cells[0].Value).Id ?? -1))
-                toBeRemoved.Add(i);
-        }
-        SuspendLayout();
-        toBeRemoved.Sort();
-        foreach (var index in (toBeRemoved as IEnumerable<int>).Reverse())
-            Rows.RemoveAt(index);
-        ResumeLayout(true);
-    }
-
-    public void FilterRows(Predicate<Transaction> predicate) {
-        for (int i = 0; i < Rows.Count; ++i) {
-            Rows[i].Visible = predicate((Transaction)Rows[i].Cells[0].Value);
-        }
-        OnRowsFiltered?.Invoke();
-    }
-
-    public IEnumerable<Transaction> GetFilteredRowValues() {
-        for (int i = 0; i < Rows.Count; ++i) {
-            if (Rows[i].Visible)
-                yield return (Transaction)Rows[i].Cells[0].Value;
-        }
-    }
-
-    public IEnumerable<Transaction> GetRowValues() {
-        for (int i = 0; i < Rows.Count; ++i) {
-            yield return (Transaction)Rows[i].Cells[0].Value;
-        }
-    }
-
-    public void ClearFilter() {
-        for (int i = 0; i < Rows.Count; ++i)
-            Rows[i].Visible = true;
-    }
-
-    private void CleanUp(object? sender, EventArgs e) => transactions?.Clear();
-
-    protected override void OnColumnHeaderMouseClick(DataGridViewCellMouseEventArgs e) {
-        if (e.ColumnIndex < 2) {
-            for (int i = 0; i < 2; ++i)
-                if (i != e.ColumnIndex)
-                    Columns[i].HeaderCell.SortGlyphDirection = SortOrder.None;
-            var direction = Columns[e.ColumnIndex].HeaderCell.SortGlyphDirection;
-            direction = (SortOrder)(((int)direction + 1) % 3);
-            if (direction != SortOrder.None)
-                Sort(Columns[e.ColumnIndex], direction == SortOrder.Ascending ? System.ComponentModel.ListSortDirection.Ascending : System.ComponentModel.ListSortDirection.Descending);
-            Columns[e.ColumnIndex].HeaderCell.SortGlyphDirection = direction;
-        }
-        base.OnColumnHeaderMouseClick(e);
-    }
-
-    protected override void OnSortCompare(DataGridViewSortCompareEventArgs e) {
-        e.Handled = true;
-        switch (e.Column.Index) {
-            case 0:
-                e.SortResult = SortByDate(e);
-                return;
-            case 1:
-                e.SortResult = SortByAmount(e);
-                return;
-            default:
-                throw new ArgumentOutOfRangeException(nameof(e.Column.Index));
-        }
-    }
-
-    private static int SortByDate(DataGridViewSortCompareEventArgs e) => ((Transaction)e.CellValue1).Date.CompareTo(((Transaction)e.CellValue2).Date);
-    private static int SortByAmount(DataGridViewSortCompareEventArgs e) => ((Transaction)e.CellValue1).Amount.CompareTo(((Transaction)e.CellValue2).Amount);
 }

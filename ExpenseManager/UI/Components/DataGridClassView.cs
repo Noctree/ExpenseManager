@@ -7,15 +7,15 @@
 public class DataGridClassView<T> : DataGridView where T : notnull
 {
     public delegate object ObjectValueSelector(T value);
-    public delegate int ColumnSortComparer(T a, T b, DataGridViewColumn column);
+    public delegate int ColumnSortComparer(T a, T b);
 
     private Dictionary<int, ColumnSortComparer> ColumnSortComparers = new Dictionary<int, ColumnSortComparer>();
+    private Dictionary<int, ObjectValueSelector> ColumnValueSelectors = new Dictionary<int, ObjectValueSelector>();
     protected List<T> dataGridValues = new List<T>();
 
     public event EventHandler? OnRowsFiltered;
     public event EventHandler? OnRowFilterCleared;
 
-    public IDictionary<int, ObjectValueSelector> ColumnValueSelectors { get; } = new Dictionary<int, ObjectValueSelector>();
     public IReadOnlyList<T> Values => dataGridValues.AsReadOnly();
 
     private object[] CreateObjectBuffer() => new object[Columns.Count];
@@ -64,7 +64,7 @@ public class DataGridClassView<T> : DataGridView where T : notnull
             if (valuesToBeRemoved.Contains(dataGridValues[i]))
                 toBeRemoved.Add(i);
         SuspendLayout();
-        foreach (var index in toBeRemoved)
+        foreach (var index in (toBeRemoved as IEnumerable<int>).Reverse())
             RemoveAt(index);
         ResumeLayout(true);
     }
@@ -90,6 +90,11 @@ public class DataGridClassView<T> : DataGridView where T : notnull
         OnRowFilterCleared?.Invoke(this, EventArgs.Empty);
     }
 
+    public void ClearRows() {
+        dataGridValues.Clear();
+        Rows.Clear();
+    }
+
     protected void RegisterColumnSortComparer(int columnIndex, ColumnSortComparer comparer) {
         if (!ColumnSortComparers.TryAdd(columnIndex, comparer))
             throw new ArgumentException($"A different sort comparer for column {columnIndex} has already beed registered", nameof(comparer));
@@ -99,12 +104,36 @@ public class DataGridClassView<T> : DataGridView where T : notnull
     protected bool HasColumnSortComparerForColumn(int columnIndex) => ColumnSortComparers.ContainsKey(columnIndex);
     protected void UnregisterAllColumnSortComparers() => ColumnSortComparers.Clear();
 
+    protected void RegisterColumnValueSelector(int columnIndex, ObjectValueSelector selector) {
+        if (ColumnValueSelectors.ContainsKey(columnIndex))
+            ColumnValueSelectors[columnIndex] = selector;
+        else
+            ColumnValueSelectors.Add(columnIndex, selector);
+    }
+
+    protected void UnregisterColumnValueSelector(int columnIndex) => ColumnValueSelectors.Remove(columnIndex);
+    protected void UnregisterAllColumnValueSelectors() => ColumnValueSelectors.Clear();
+
     protected override void OnSortCompare(DataGridViewSortCompareEventArgs e) {
         if (ColumnSortComparers.TryGetValue(e.Column.Index, out var comparer)) {
-            e.SortResult = comparer((T)e.CellValue1, (T)e.CellValue2, e.Column);
+            e.SortResult = comparer((T)e.CellValue1, (T)e.CellValue2);
             e.Handled = true;
         } else
             base.OnSortCompare(e);
+    }
+
+    protected override void OnColumnHeaderMouseClick(DataGridViewCellMouseEventArgs e) {
+        if (HasColumnSortComparerForColumn(e.ColumnIndex)) {
+            for (int i = 0; i < Columns.Count; ++i)
+                if (i != e.ColumnIndex)
+                    Columns[i].HeaderCell.SortGlyphDirection = SortOrder.None;
+            var direction = Columns[e.ColumnIndex].HeaderCell.SortGlyphDirection;
+            direction = (SortOrder)(((int)direction + 1) % 3);
+            if (direction != SortOrder.None)
+                Sort(Columns[e.ColumnIndex], direction == SortOrder.Ascending ? System.ComponentModel.ListSortDirection.Ascending : System.ComponentModel.ListSortDirection.Descending);
+            Columns[e.ColumnIndex].HeaderCell.SortGlyphDirection = direction;
+        }
+        base.OnColumnHeaderMouseClick(e);
     }
 
     protected override void Dispose(bool disposing) {

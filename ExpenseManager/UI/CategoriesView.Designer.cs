@@ -206,6 +206,7 @@
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.BottomUILayout);
             this.Name = "CategoriesView";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "CategoriesView";
             ((System.ComponentModel.ISupportInitialize)(this.CategoryDataGridView)).EndInit();
             this.BottomUILayout.ResumeLayout(false);

@@ -26,8 +26,8 @@ partial class DateRangePicker
     /// </summary>
     private void InitializeComponent() {
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.FromDatePicker = new System.Windows.Forms.DateTimePicker();
             this.ToDatePicker = new System.Windows.Forms.DateTimePicker();
+            this.FromDatePicker = new System.Windows.Forms.DateTimePicker();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
@@ -60,19 +60,19 @@ partial class DateRangePicker
             this.tableLayoutPanel1.Size = new System.Drawing.Size(554, 70);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
-            // FromDatePicker
-            // 
-            this.FromDatePicker.Location = new System.Drawing.Point(78, 3);
-            this.FromDatePicker.Name = "FromDatePicker";
-            this.FromDatePicker.Size = new System.Drawing.Size(196, 23);
-            this.FromDatePicker.TabIndex = 0;
-            // 
             // ToDatePicker
             // 
             this.ToDatePicker.Location = new System.Drawing.Point(355, 3);
             this.ToDatePicker.Name = "ToDatePicker";
             this.ToDatePicker.Size = new System.Drawing.Size(196, 23);
             this.ToDatePicker.TabIndex = 1;
+            // 
+            // FromDatePicker
+            // 
+            this.FromDatePicker.Location = new System.Drawing.Point(78, 3);
+            this.FromDatePicker.Name = "FromDatePicker";
+            this.FromDatePicker.Size = new System.Drawing.Size(196, 23);
+            this.FromDatePicker.TabIndex = 0;
             // 
             // label1
             // 
@@ -155,6 +155,7 @@ partial class DateRangePicker
             this.Controls.Add(this.tableLayoutPanel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "DateRangePicker";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Select Date Range";
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();

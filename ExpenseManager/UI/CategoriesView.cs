@@ -7,7 +7,7 @@ public partial class CategoriesView : Form
 {
     private ExpensesDAO dao;
     private CategoryEditor editor;
-    public event Action CategoriesModified;
+    public event Action? CategoriesModified;
     public CategoriesView() {
         InitializeComponent();
         Disposed += CleanUp;
@@ -61,7 +61,7 @@ public partial class CategoriesView : Form
             editor = new CategoryEditor(dao);
         if (editor.ShowDialog(category) == DialogResult.OK) {
             if (dao.AddCategory(category, out var addedCategory)) {
-                CategoryDataGridView.AddCategory(addedCategory!);
+                CategoryDataGridView.AddRow(addedCategory!);
                 CategoryDataGridView.Refresh();
             } else
                 MessageBox.Show("Failed to add category", "Error", MessageBoxButtons.OK);
@@ -76,7 +76,7 @@ public partial class CategoriesView : Form
         var rows = CategoryDataGridView.SelectedRows;
         for (int i = 0; i < rows.Count; i++)
             categories.Add((Category)rows[i].Cells[0].Value);
-        CategoryDataGridView.RemoveCategories(categories);
+        CategoryDataGridView.RemoveRows(categories);
         dao.DeleteCategories(categories);
         CategoriesModified?.Invoke();
     }
@@ -87,6 +87,6 @@ public partial class CategoriesView : Form
         for (int i = 0; i < rows.Count; i++)
             categories.Add((Category)rows[i].Cells[0].Value);
         dao.AddCategories(categories, out var addedCategories);
-        CategoryDataGridView.AddCategories(addedCategories);
+        CategoryDataGridView.AddRows(addedCategories);
     }
 }

@@ -13,7 +13,7 @@ public partial class AccountExpenses : UserControl {
     private CategoryPicker categoryPicker = new CategoryPicker();
 
     public ExpensesDAO DAO => expensesDAO;
-    public event Action<AccountExpenses> RequestsClose;
+    public event Action<AccountExpenses>? RequestsClose;
     public AccountExpenses(ExpensesDAO dao) {
         this.expensesDAO = dao;
         InitializeComponent();
@@ -70,15 +70,17 @@ public partial class AccountExpenses : UserControl {
         DisableLoadingOverlay();
         UpdateControlButtons();
         TransactionsDataGridView.ClearSelection();
-        TransactionsDataGridView.OnRowsFiltered += ComputeFilteredBallance;
+        TransactionsDataGridView.OnRowsFiltered += TransactionsDataGridView_OnRowsFiltered;
     }
 
+    private void TransactionsDataGridView_OnRowsFiltered(object? sender, EventArgs e) => ComputeFilteredBallance();
+
     private void ComputeTotalBallance() {
-        TotalBallanceDisplay.Text = TransactionsDataGridView.GetRowValues().Sum(transaction => transaction.Amount).ToString(System.Globalization.CultureInfo.InvariantCulture) + " Kč";
+        TotalBallanceDisplay.Text = TransactionsDataGridView.Values.Sum(transaction => transaction.Amount).ToString(System.Globalization.CultureInfo.InvariantCulture) + " Kč";
     }
 
     private void ComputeFilteredBallance() {
-        FilteredBallanceDisplay.Text = TransactionsDataGridView.GetFilteredRowValues().Sum(transaction => transaction.Amount).ToString(System.Globalization.CultureInfo.InvariantCulture) + " Kč";
+        FilteredBallanceDisplay.Text = TransactionsDataGridView.GetVisibleValues().Sum(transaction => transaction.Amount).ToString(System.Globalization.CultureInfo.InvariantCulture) + " Kč";
     }
 
     private void OpenCategoriesPanel_Click(object sender, EventArgs e) {
@@ -129,7 +131,7 @@ public partial class AccountExpenses : UserControl {
             transactionEditor = new TransactionEditor(expensesDAO);
         if (transactionEditor.ShowDialog(transaction) == DialogResult.OK) {
             if (expensesDAO.AddTransaction(transaction, out var addedTransaction)) {
-                TransactionsDataGridView.AddTransaction(addedTransaction!);
+                TransactionsDataGridView.AddRow(addedTransaction!);
                 TransactionsDataGridView.Refresh();
             }
             else
@@ -145,7 +147,7 @@ public partial class AccountExpenses : UserControl {
         var rows = TransactionsDataGridView.SelectedRows;
         for (int i = 0; i < rows.Count; ++i)
             transactions.Add((Transaction)rows[i].Cells[0].Value);
-        TransactionsDataGridView.RemoveTransactions(transactions);
+        TransactionsDataGridView.RemoveRows(transactions);
         if (!DAO.DeleteTransactions(transactions))
             MessageBox.Show("Failed to delete selected rows,\nplease close this account and reopen it", "Error", MessageBoxButtons.OK);
     }
@@ -156,7 +158,7 @@ public partial class AccountExpenses : UserControl {
         for (int i = 0; i < rows.Count; ++i)
             transactions.Add((Transaction)rows[i].Cells[0].Value);
         DAO.AddTransactions(transactions, out var addedTransactions);
-        TransactionsDataGridView.AddTransactions(addedTransactions);
+        TransactionsDataGridView.AddRows(addedTransactions);
     }
 
     private void ClearFilters_Click(object sender, EventArgs e) {

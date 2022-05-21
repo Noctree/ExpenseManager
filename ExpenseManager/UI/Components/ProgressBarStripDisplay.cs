@@ -1,4 +1,4 @@
-﻿namespace ExpenseManager.UI;
+﻿namespace ExpenseManager.UI.Components;
 
 public class ProgressBarStripDisplay : ToolStrip
 {
@@ -74,22 +74,16 @@ public class ProgressBarStripDisplay : ToolStrip
 
         protected virtual void Dispose(bool disposing) {
             if (!disposedValue) {
-                if (disposing) {
-                    // TODO: dispose managed state (managed objects)
-                }
-
                 parent.DestroyProgressBar(this);
                 disposedValue = true;
             }
         }
 
         ~ProgressBarContainer() {
-            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
             Dispose(disposing: false);
         }
 
         public void Dispose() {
-            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
         }

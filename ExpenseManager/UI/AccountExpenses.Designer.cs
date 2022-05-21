@@ -52,7 +52,7 @@
             this.MiscellaneousButtonsLayout = new System.Windows.Forms.TableLayoutPanel();
             this.OpenCategoriesPanel = new System.Windows.Forms.Button();
             this.CloseDatabaseButton = new System.Windows.Forms.Button();
-            this.TransactionsDataGridView = new ExpenseManager.UI.TransactionsDataGridView();
+            this.TransactionsDataGridView = new ExpenseManager.UI.Components.TransactionsDataGridView();
             this.TransactionDateView = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.TransactionAmountView = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.TransactionCategoryView = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -566,7 +566,7 @@
         private Button NewTransactionButton;
         private Label TotalBallanceDisplay;
         private Label FilteredBallanceDisplay;
-        private TransactionsDataGridView TransactionsDataGridView;
+        private ExpenseManager.UI.Components.TransactionsDataGridView TransactionsDataGridView;
         private TableLayoutPanel UILayout;
         private GroupBox groupBox2;
         private Button OpenCategoriesPanel;

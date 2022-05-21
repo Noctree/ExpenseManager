@@ -1,4 +1,5 @@
 ﻿using ExpenseManager.DataObjects;
+using ExpenseManager.UI.Components;
 
 namespace ExpenseManager.UI;
 

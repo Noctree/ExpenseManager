@@ -1,4 +1,4 @@
-﻿namespace ExpenseManager.UI;
+﻿namespace ExpenseManager.UI.Components;
 
 public partial class TextboxDialog : Form
 {

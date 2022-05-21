@@ -1,4 +1,6 @@
-﻿namespace ExpenseManager.UI;
+﻿using ExpenseManager.UI.Components;
+
+namespace ExpenseManager.UI;
 
 public partial class OpenDatabaseDialog : Form
 {

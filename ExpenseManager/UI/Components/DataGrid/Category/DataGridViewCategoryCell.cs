@@ -1,6 +1,6 @@
 ﻿using ExpenseManager.DataObjects;
 
-namespace ExpenseManager.UI;
+namespace ExpenseManager.UI.Components;
 
 public class DataGridViewCategoryCell : DataGridViewGenericTextBoxCell<Category>
 {

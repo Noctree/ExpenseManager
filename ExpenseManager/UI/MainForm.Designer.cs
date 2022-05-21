@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            this.StatusBarContainer = new ExpenseManager.UI.ProgressBarStripDisplay();
+            this.StatusBarContainer = new ExpenseManager.UI.Components.ProgressBarStripDisplay();
             this.TopToolStrip = new System.Windows.Forms.ToolStrip();
             this.OpenAccountButton = new System.Windows.Forms.ToolStripButton();
             this.ImportUserButton = new System.Windows.Forms.ToolStripButton();
@@ -180,7 +180,7 @@
 
         #endregion
 
-        private ProgressBarStripDisplay StatusBarContainer;
+        private ExpenseManager.UI.Components.ProgressBarStripDisplay StatusBarContainer;
         private ToolStrip TopToolStrip;
         private TabControl AccountTabsContainer;
         private Label label1;

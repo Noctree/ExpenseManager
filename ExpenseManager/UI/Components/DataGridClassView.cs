@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ExpenseManager.UI.Components;
+﻿namespace ExpenseManager.UI.Components;
 
 /// <summary>
 /// DataGridView ideal for displaying data of a single class of type <see cref="T"/>

@@ -1,6 +1,6 @@
 ﻿using ExpenseManager.DataObjects;
 
-namespace ExpenseManager.UI;
+namespace ExpenseManager.UI.Components;
 public class DataGridViewTransactionAmountCell : DataGridViewGenericTextBoxCell<Transaction>
 {
     private readonly static Color NegativeBallanceColor = Color.FromArgb(204, 47, 47);

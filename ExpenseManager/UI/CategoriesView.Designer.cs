@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            this.CategoryDataGridView = new ExpenseManager.UI.CategoryDataGridView();
+            this.CategoryDataGridView = new ExpenseManager.UI.Components.CategoryDataGridView();
             this.CategoryNameView = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.CategoryColorView = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.CategoryDescriptionView = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -216,7 +216,7 @@
 
         #endregion
 
-        private CategoryDataGridView CategoryDataGridView;
+        private ExpenseManager.UI.Components.CategoryDataGridView CategoryDataGridView;
         private TableLayoutPanel BottomUILayout;
         private TableLayoutPanel tableLayoutPanel1;
         private Button AddSelectedButton;

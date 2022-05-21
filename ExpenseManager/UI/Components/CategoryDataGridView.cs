@@ -36,11 +36,14 @@ public class CategoryDataGridView : DataGridView
         InitializeColumns();
         expensesDAO = dao;
         var categories = dao.GetCategories();
-        Rows.Add(categories.Count);
-        for (int i = 0; i < Rows.Count; i++) {
-            var cells = Rows[i].Cells;
-            for (int j = 0; j < cells.Count; j++)
-                cells[j].Value = categories[i];
+        categories.Remove(dao.DefaultCategory);
+        if (categories.Count > 0) {
+            Rows.Add(categories.Count);
+            for (int i = 0; i < Rows.Count; i++) {
+                var cells = Rows[i].Cells;
+                for (int j = 0; j < cells.Count; j++)
+                    cells[j].Value = categories[i];
+            }
         }
         Initialized = true;
     }
@@ -51,14 +54,14 @@ public class CategoryDataGridView : DataGridView
     }
 
     public void AddCategory(Category category) {
-        var objects = new object[Rows.Count];
+        var objects = new object[Columns.Count];
         for (int i = 0; i < objects.Length; ++i)
             objects[i] = category;
         Rows.Add(objects);
     }
 
     public void AddCategories(IList<Category> categories) {
-        var objects = new object[Rows.Count];
+        var objects = new object[Columns.Count];
         foreach (var category in categories) {
             for (int i = 0; i < objects.Length; ++i)
                 objects[i] = category;

@@ -17,6 +17,8 @@ public class TransactionsDataGridView : DataGridView
     }
     public bool Initialized { get; private set; }
 
+    public event Action? OnRowsFiltered;
+
     private void InitializeColumns() {
         Columns[0].CellTemplate = new DataGridViewGenericTextBoxCell<Transaction>() {
             TextFormatter = transaction => transaction.Date.ToString()
@@ -43,25 +45,27 @@ public class TransactionsDataGridView : DataGridView
         expensesDAO = dao;
         if (transactions is null)
             transactions = dao.GetTransactions();
-        Rows.Add(transactions.Count);
-        for (int i = 0; i < Rows.Count; ++i) {
-            var cells = Rows[i].Cells;
-            for (int j = 0; j < cells.Count; ++j)
-                cells[j].Value = j == 2 ? transactions[i].Category : transactions[i];
+        if (transactions.Count > 0) {
+            Rows.Add(transactions.Count);
+            for (int i = 0; i < Rows.Count; ++i) {
+                var cells = Rows[i].Cells;
+                for (int j = 0; j < cells.Count; ++j)
+                    cells[j].Value = j == 2 ? transactions[i].Category : transactions[i];
+            }
         }
         Disposed += CleanUp;
         Initialized = true;
     }
 
     public void AddTransaction(Transaction transaction) {
-        var objects = new object[Rows.Count];
+        var objects = new object[Columns.Count];
         for (int i = 0; i < objects.Length; ++i)
             objects[i] = i == 2? transaction.Category : transaction;
         Rows.Add(objects);
     }
 
     public void AddTransactions(IList<Transaction> transactions) {
-        var objects = new object[Rows.Count];
+        var objects = new object[Columns.Count];
         foreach (var transaction in transactions) {
             for (int i = 0; i < objects.Length; ++i)
                 objects[i] = i == 2 ? transaction.Category : transaction;
@@ -76,10 +80,10 @@ public class TransactionsDataGridView : DataGridView
     }
 
     public void RemoveTransactions(IList<Transaction> transactions) {
-        var transactionDict = transactions.ToDictionary(transaction => transaction.Id ?? -1);
+        var transactionDict = transactions.Select(transaction => transaction.Id ?? -1).ToHashSet();
         var toBeRemoved = new List<int>();
         for (int i = 0; i < Rows.Count; ++i) {
-            if (transactionDict.ContainsKey(((Transaction)Rows[i].Cells[0].Value).Id ?? -1))
+            if (transactionDict.Contains(((Transaction)Rows[i].Cells[0].Value).Id ?? -1))
                 toBeRemoved.Add(i);
         }
         SuspendLayout();
@@ -92,6 +96,20 @@ public class TransactionsDataGridView : DataGridView
     public void FilterRows(Predicate<Transaction> predicate) {
         for (int i = 0; i < Rows.Count; ++i) {
             Rows[i].Visible = predicate((Transaction)Rows[i].Cells[0].Value);
+        }
+        OnRowsFiltered?.Invoke();
+    }
+
+    public IEnumerable<Transaction> GetFilteredRowValues() {
+        for (int i = 0; i < Rows.Count; ++i) {
+            if (Rows[i].Visible)
+                yield return (Transaction)Rows[i].Cells[0].Value;
+        }
+    }
+
+    public IEnumerable<Transaction> GetRowValues() {
+        for (int i = 0; i < Rows.Count; ++i) {
+            yield return (Transaction)Rows[i].Cells[0].Value;
         }
     }
 

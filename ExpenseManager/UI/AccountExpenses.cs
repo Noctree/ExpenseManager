@@ -57,6 +57,8 @@ public partial class AccountExpenses : UserControl {
 
     protected override void OnLoad(EventArgs e) {
         Initialize();
+        ComputeTotalBallance();
+        FilteredBallanceDisplay.Text = TotalBallanceDisplay.Text;
         base.OnLoad(e);
     }
 
@@ -67,6 +69,15 @@ public partial class AccountExpenses : UserControl {
         DisableLoadingOverlay();
         UpdateControlButtons();
         TransactionsDataGridView.ClearSelection();
+        TransactionsDataGridView.OnRowsFiltered += ComputeFilteredBallance;
+    }
+
+    private void ComputeTotalBallance() {
+        TotalBallanceDisplay.Text = TransactionsDataGridView.GetRowValues().Sum(transaction => transaction.Amount).ToString(System.Globalization.CultureInfo.InvariantCulture) + " Kč";
+    }
+
+    private void ComputeFilteredBallance() {
+        FilteredBallanceDisplay.Text = TransactionsDataGridView.GetFilteredRowValues().Sum(transaction => transaction.Amount).ToString(System.Globalization.CultureInfo.InvariantCulture) + " Kč";
     }
 
     private void OpenCategoriesPanel_Click(object sender, EventArgs e) {

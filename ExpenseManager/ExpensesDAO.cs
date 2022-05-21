@@ -12,17 +12,14 @@ public class ExpensesDAO : IDisposable
     private readonly SqlTable categoriesTable;
     private readonly SqlTable transactionsTable;
 
-    private readonly IObjectDeconstructor<Category> categoryDeconstructor;
-    private readonly IObjectDeconstructor<Transaction> transactionDeconstructor;
-    private readonly IObjectReconstructor<Category> categoryReconstructor;
-    private readonly IObjectReconstructor<Transaction> transactionReconstructor;
-
     private List<Category>? cachedCategories;
     private bool categoriesChanged;
 
     private bool disposedValue;
-    public IObjectDeconstructor<Transaction> TransactionDeconstructor => transactionDeconstructor;
-    public IObjectDeconstructor<Category> CategoryDeconstructor => categoryDeconstructor;
+    public IObjectSqlDeconstructor<Transaction> TransactionDeconstructor { get; }
+    public IObjectSqlDeconstructor<Category> CategoryDeconstructor { get; }
+    public IObjectSqlReconstructor<Transaction> TransactionReconstructor { get; }
+    public IObjectSqlReconstructor<Category> CategoryReconstructor { get; }
     public bool Disposed => disposedValue;
 
     public string Name => dbConnection.DataSource;
@@ -34,10 +31,10 @@ public class ExpensesDAO : IDisposable
         var transactionTableDescriptor = new SqlTableDescriptor(new SqlDateOnly("date"), new SqlDecimal("amount"), new SqlInteger("category"), new SqlText("description"), new SqlPrimaryKey());
         categoriesTable = new SqlTable(new SQLiteConnection(dbConnection), CategoryTableName, categoryTableDescriptor);
         transactionsTable = new SqlTable(new SQLiteConnection(dbConnection), ExpensesTableName, transactionTableDescriptor);
-        categoryDeconstructor = new CategoryDeconstructor(categoriesTable.ColumnNames.Take(3));
-        transactionDeconstructor = new TransactionDeconstructor(transactionsTable.ColumnNames.Take(4));
-        categoryReconstructor = new CategoryReconstructor();
-        transactionReconstructor = new TransactionReconstructor();
+        CategoryDeconstructor = new CategoryDeconstructor(categoriesTable.ColumnNames.Take(3));
+        TransactionDeconstructor = new TransactionDeconstructor(transactionsTable.ColumnNames.Take(4));
+        CategoryReconstructor = new CategoryReconstructor();
+        TransactionReconstructor = new TransactionReconstructor();
 
         var globalDefaultCategory = Category.Default;
         if (categoriesTable.Create()) {
@@ -67,7 +64,7 @@ public class ExpensesDAO : IDisposable
         var columns = categoriesTable.GetRow(categoriesTable.ColumnNames);
         categories.EnsureCapacity(columns.Count);
         foreach (var column in columns)
-            categories.Add(categoryReconstructor.ReconstructObject(column));
+            categories.Add(CategoryReconstructor.ReconstructObject(column));
         return categories;
     }
 
@@ -76,14 +73,14 @@ public class ExpensesDAO : IDisposable
         var columns = categoriesTable.GetRowsWhere($"name = '{categoryName}'", categoriesTable.ColumnNames);
         if (columns.Count == 0)
             return false;
-        category = categoryReconstructor.ReconstructObject(columns[0]);
+        category = CategoryReconstructor.ReconstructObject(columns[0]);
         return true;
     }
 
     public bool AddCategories(IReadOnlyList<Category> categories, out List<Category> addedcategories) {
         categoriesChanged = true;
         addedcategories = new List<Category>();
-        var result = categoriesTable.InsertRows(categoryDeconstructor, categories) == categories.Count;
+        var result = categoriesTable.InsertRows(CategoryDeconstructor, categories) == categories.Count;
         var lastId = categoriesTable.GetLastPrimaryKeyId();
         if (result) {
             for (int i = categories.Count - 1; i >= 0; i--) {
@@ -97,19 +94,19 @@ public class ExpensesDAO : IDisposable
 
     public bool AddCategory(Category category, out Category? addedCategory) {
         categoriesChanged = true;
-        var result = categoriesTable.InsertRow(categoryDeconstructor, category) != 0;
+        var result = categoriesTable.InsertRow(CategoryDeconstructor, category) != 0;
         addedCategory = result ? new Category(category, categoriesTable.GetLastPrimaryKeyId()) : null;
         return result;
     }
 
     public bool AddTransaction(Transaction transaction, out Transaction? addedTransaction) {
-        var result = transactionsTable.InsertRow(transactionDeconstructor, transaction) != 0;
+        var result = transactionsTable.InsertRow(TransactionDeconstructor, transaction) != 0;
         addedTransaction = result? new Transaction(transaction, transactionsTable.GetLastPrimaryKeyId()) : null;
         return result;
     }
 
     public bool AddTransactions(IReadOnlyList<Transaction> transactions, out List<Transaction> addedTransactions) {
-        var result = transactionsTable.InsertRows(transactionDeconstructor, transactions) == transactions.Count;
+        var result = transactionsTable.InsertRows(TransactionDeconstructor, transactions) == transactions.Count;
         addedTransactions = new List<Transaction>();
         var lastId = transactionsTable.GetLastPrimaryKeyId();
         if (result) {
@@ -128,7 +125,7 @@ public class ExpensesDAO : IDisposable
         var columns = transactionsTable.GetRow(transactionsTable.ColumnNames);
         transactions.EnsureCapacity(columns.Count);
         foreach (var column in columns) {
-            var transaction = transactionReconstructor.ReconstructObject(column);
+            var transaction = TransactionReconstructor.ReconstructObject(column);
             transaction.Category = categories[(int)(long)column[2] - 1];
             transactions.Add(transaction);
         }
@@ -139,19 +136,19 @@ public class ExpensesDAO : IDisposable
 
     public Task<List<Category>> GetCategoriesAsync() => Task.Run(GetCategories);
 
-    public bool UpdateTransaction(Transaction transaction) => transactionsTable.UpdateRow(transactionDeconstructor, transaction) != 0;
-    public bool UpdateCategory(Category category) => categoriesTable.UpdateRow(categoryDeconstructor, category) != 0;
+    public bool UpdateTransaction(Transaction transaction) => transactionsTable.UpdateRow(TransactionDeconstructor, transaction) != 0;
+    public bool UpdateCategory(Category category) => categoriesTable.UpdateRow(CategoryDeconstructor, category) != 0;
 
     public bool DeleteTransaction(Transaction transaction) {
-        var result = transactionsTable.DeleteRow(transactionDeconstructor, transaction) != 0;
+        var result = transactionsTable.DeleteRow(TransactionDeconstructor, transaction) != 0;
         if (result)
-            transaction.Id = -1;
+            transaction.Invalidate();
         return result;
     }
     public bool DeleteCategory(Category category) {
-        var result = categoriesTable.DeleteRow(categoryDeconstructor, category) != 0;
+        var result = categoriesTable.DeleteRow(CategoryDeconstructor, category) != 0;
         if (result)
-            category.Id = -1;
+            category.Invalidate();
         categoriesChanged = true;
         return result;
     }
@@ -160,10 +157,10 @@ public class ExpensesDAO : IDisposable
             return true;
         if (transactions.Count == 1)
             return DeleteTransaction(transactions[0]);
-        var result = transactionsTable.DeleteRows(transactionDeconstructor, transactions) == transactions.Count;
+        var result = transactionsTable.DeleteRows(TransactionDeconstructor, transactions) == transactions.Count;
         if (result)
             foreach (var transaction in transactions)
-                transaction.Id = -1;
+                transaction.Invalidate();
         return result;
     }
     public bool DeleteCategories(IReadOnlyList<Category> categories) {
@@ -173,10 +170,10 @@ public class ExpensesDAO : IDisposable
             return DeleteCategory(categories[0]);
         foreach (var category in categories)
             transactionsTable.ExecuteRawSQL($"UPDATE {transactionsTable.TableName} SET category = {DefaultCategory.Id} WHERE category = {category.Id ?? -1};");
-        var result = transactionsTable.DeleteRows(categoryDeconstructor, categories) == categories.Count;
+        var result = transactionsTable.DeleteRows(CategoryDeconstructor, categories) == categories.Count;
         if (result)
             foreach (var category in categories)
-                category.Id = -1;
+                category.Invalidate();
         categoriesChanged = true;
         return result;
     }

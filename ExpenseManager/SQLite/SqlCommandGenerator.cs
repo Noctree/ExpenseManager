@@ -84,7 +84,7 @@ public static class SqlCommandGenerator
         return sb.ToString();
     }
 
-    public static string CreateInsertCommand<T>(SqlTable table, IObjectDeconstructor<T> deconstructor, T target) {
+    public static string CreateInsertCommand<T>(SqlTable table, IObjectSqlDeconstructor<T> deconstructor, T target) {
         var descriptors = table.TableDescriptor.GetDescriptorsByNames(deconstructor.ColumnNames);
         sb.Clear();
         CreateInsertHeader(table, deconstructor, sb);
@@ -102,7 +102,7 @@ public static class SqlCommandGenerator
         return sb.ToString();
     }
 
-    public static string CreateInsertCommand<T>(SqlTable table, IObjectDeconstructor<T> deconstructor, IReadOnlyList<T> values) {
+    public static string CreateInsertCommand<T>(SqlTable table, IObjectSqlDeconstructor<T> deconstructor, IReadOnlyList<T> values) {
         var descriptors = table.TableDescriptor.GetDescriptorsByNames(deconstructor.ColumnNames);
         sb.Clear();
         CreateInsertHeader(table, deconstructor, sb);
@@ -129,7 +129,7 @@ public static class SqlCommandGenerator
         return result;
     }
 
-    private static void CreateInsertHeader<T>(SqlTable table, IObjectDeconstructor<T> deconstructor, StringBuilder sb) {
+    private static void CreateInsertHeader<T>(SqlTable table, IObjectSqlDeconstructor<T> deconstructor, StringBuilder sb) {
         sb.Append("INSERT INTO ");
         sb.Append(table.TableName);
         sb.Append(' ');
@@ -144,7 +144,7 @@ public static class SqlCommandGenerator
         }
     }
 
-    public static string CreateUpdateCommand<T>(SqlTable table, IObjectDeconstructor<T> deconstructor, T target) {
+    public static string CreateUpdateCommand<T>(SqlTable table, IObjectSqlDeconstructor<T> deconstructor, T target) {
         var descriptors = table.TableDescriptor.GetDescriptorsByNames(deconstructor.ColumnNames);
         sb.Clear();
         sb.Append("UPDATE ");
@@ -167,7 +167,7 @@ public static class SqlCommandGenerator
         return sb.ToString();
     }
 
-    public static string CreateDeleteCommandById<T>(SqlTable table, IObjectDeconstructor<T> deconstructor, T target) {
+    public static string CreateDeleteCommandById<T>(SqlTable table, IObjectSqlDeconstructor<T> deconstructor, T target) {
         sb.Clear();
         CreateDeleteHeader(table, sb);
         sb.Append(table.TableDescriptor.PrimaryKey.Name);
@@ -177,7 +177,7 @@ public static class SqlCommandGenerator
         return sb.ToString();
     }
     
-    public static string CreateDeleteCommandByIdMultiple<T>(SqlTable table, IObjectDeconstructor<T> deconstructor, IReadOnlyList<T> targets) {
+    public static string CreateDeleteCommandByIdMultiple<T>(SqlTable table, IObjectSqlDeconstructor<T> deconstructor, IReadOnlyList<T> targets) {
         sb.Clear();
         CreateDeleteHeader(table, sb);
         sb.Append(table.TableDescriptor.PrimaryKey.Name);

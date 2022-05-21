@@ -1,7 +1,7 @@
 ﻿using ExpenseManager.SQLite;
 
 namespace ExpenseManager.DataObjects.Conversion;
-public class TransactionDeconstructor : IObjectDeconstructor<Transaction>
+public class TransactionDeconstructor : IObjectSqlDeconstructor<Transaction>
 {
     public IReadOnlyList<string> ColumnNames { get; }
 
@@ -11,13 +11,13 @@ public class TransactionDeconstructor : IObjectDeconstructor<Transaction>
         ColumnNames = columnNames.ToList().AsReadOnly();
     }
 
-    public object? GetFieldValueAt(Transaction target, int index) {
+    public object GetFieldValueAt(Transaction target, int index) {
         return index switch {
             0 => target.Date,
             1 => target.Amount,
             2 => target.Category.Id ?? throw new NullReferenceException($"Category {target.Category.Name} has no ID"),
             3 => target.Description,
-            _ => IObjectDeconstructor<Transaction>.ThrowFieldIndexOutOfRange(index)
+            _ => IObjectSqlDeconstructor<Transaction>.ThrowFieldIndexOutOfRange(index)
         };
     }
 

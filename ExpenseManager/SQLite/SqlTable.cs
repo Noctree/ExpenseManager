@@ -61,7 +61,7 @@ public class SqlTable : IDisposable {
         return results;
     }
 
-    public int InsertRow<T>(IObjectDeconstructor<T> deconstructor, T value) {
+    public int InsertRow<T>(IObjectSqlDeconstructor<T> deconstructor, T value) {
         int result = 0;
         using (var _ = Connection.OpenAsTemporaryConnection()) {
             var command = Connection.CreateCommand();
@@ -83,7 +83,7 @@ public class SqlTable : IDisposable {
         return result;
     }
 
-    public int InsertRows<T>(IObjectDeconstructor<T> deconstructor, IReadOnlyList<T> values) {
+    public int InsertRows<T>(IObjectSqlDeconstructor<T> deconstructor, IReadOnlyList<T> values) {
         int result = 0;
         using (var _ = Connection.OpenAsTemporaryConnection()) {
             var command = Connection.CreateCommand();
@@ -95,7 +95,7 @@ public class SqlTable : IDisposable {
         return result;
     }
 
-    public int UpdateRow<T>(IObjectDeconstructor<T> deconstructor, T value) {
+    public int UpdateRow<T>(IObjectSqlDeconstructor<T> deconstructor, T value) {
         int result = 0;
         using (var _ = Connection.OpenAsTemporaryConnection()) {
             var command = Connection.CreateCommand();
@@ -117,7 +117,7 @@ public class SqlTable : IDisposable {
         return result;
     }
 
-    public int DeleteRow<T>(IObjectDeconstructor<T> deconstructor, T value) {
+    public int DeleteRow<T>(IObjectSqlDeconstructor<T> deconstructor, T value) {
         int result = 0;
         using (var _ = Connection.OpenAsTemporaryConnection()) {
             var command = Connection.CreateCommand();
@@ -128,7 +128,7 @@ public class SqlTable : IDisposable {
         return result;
     }
 
-    public int DeleteRows<T>(IObjectDeconstructor<T> deconstructor, IReadOnlyList<T> values) {
+    public int DeleteRows<T>(IObjectSqlDeconstructor<T> deconstructor, IReadOnlyList<T> values) {
         int result = 0;
         using (var _ = Connection.OpenAsTemporaryConnection()) {
             var command = Connection.CreateCommand();

@@ -4,7 +4,7 @@ public class Category
 {
     private static readonly Color DEFAULT_COLOR = Color.White;
     public static Category Default { get; } = new Category(string.Empty);
-    public long? Id { get; set; }
+    public long? Id { get; private set; }
     public string Name { get; set; }
     public Color Color { get; set; }
     public string Description { get; set; }
@@ -23,11 +23,14 @@ public class Category
         Color = category.Color;
     }
 
+    public void Invalidate() => Id = -1;
+
     public override string ToString() {
         return $"{Name} | {Description} | {Color}";
     }
 
     public override bool Equals(object? obj) => obj is Category category && Id == category.Id;
+    public override int GetHashCode() => HashCode.Combine(Id);
 
     public static bool operator ==(Category? left, Category? right) => EqualityComparer<Category>.Default.Equals(left, right);
     public static bool operator !=(Category? left, Category? right) => !(left == right);

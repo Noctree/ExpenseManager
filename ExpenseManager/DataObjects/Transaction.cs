@@ -2,7 +2,7 @@
 
 public class Transaction
 {
-    public long? Id { get; set; }
+    public long? Id { get; private set; }
     public DateOnly Date { get; set; }
     public decimal Amount { get; set; }
     public Category Category { get; set; }
@@ -23,12 +23,14 @@ public class Transaction
         Description = transaction.Description;
     }
 
+    public void Invalidate() => Id = null;
+
     public override string ToString() {
         return $"{Date} | {Amount} | {Category.Name} | {Description}";
     }
 
     public override bool Equals(object? obj) => obj is Transaction transaction && Id == transaction.Id;
-
+    public override int GetHashCode() => HashCode.Combine(Id);
     public static bool operator ==(Transaction? left, Transaction? right) => EqualityComparer<Transaction>.Default.Equals(left, right);
     public static bool operator !=(Transaction? left, Transaction? right) => !(left == right);
 }

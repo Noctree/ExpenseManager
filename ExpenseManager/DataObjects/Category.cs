@@ -30,6 +30,19 @@ public class Category
     public override bool Equals(object? obj) => obj is Category category && Id == category.Id;
     public override int GetHashCode() => HashCode.Combine(Id);
 
+    /// <summary>
+    /// Compares all fields instead of just IDs
+    /// </summary>
+    /// <param name="a"></param>
+    /// <param name="b"></param>
+    /// <returns>True if all fields match</returns>
+    public static bool AreEqual(Category a, Category b) {
+        return a.Id == b.Id &&
+            a.Name.Equals(b.Name) &&
+            a.Color.Equals(b.Color) &&
+            a.Description.Equals(b.Description);
+    }
+
     public static bool operator ==(Category? left, Category? right) => EqualityComparer<Category>.Default.Equals(left, right);
     public static bool operator !=(Category? left, Category? right) => !(left == right);
 }

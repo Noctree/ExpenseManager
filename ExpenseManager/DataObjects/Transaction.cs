@@ -29,6 +29,20 @@ public class Transaction
 
     public override bool Equals(object? obj) => obj is Transaction transaction && Id == transaction.Id;
     public override int GetHashCode() => HashCode.Combine(Id);
+
+    /// <summary>
+    /// Compares all fields instead of just IDs
+    /// </summary>
+    /// <param name="a"></param>
+    /// <param name="b"></param>
+    /// <returns>True if all fields match</returns>
+    public static bool AreEqual(Transaction a, Transaction b) {
+        return a.Id == b.Id &&
+            a.Date == b.Date &&
+            a.Amount == b.Amount &&
+            Category.AreEqual(a.Category, b.Category) &&
+            a.Description.Equals(b.Description);
+    }
     public static bool operator ==(Transaction? left, Transaction? right) => EqualityComparer<Transaction>.Default.Equals(left, right);
     public static bool operator !=(Transaction? left, Transaction? right) => !(left == right);
 }

@@ -20,7 +20,7 @@ public partial class ImportAccountDialog : Form
     private void SelectTransactionsButton_Click(object sender, EventArgs e) {
         if (OpenTransactionsFileDialog.ShowDialog() == DialogResult.OK) {
             TransactionsFileNameField.Text = OpenTransactionsFileDialog.FileName;
-            var categoryFileName = ExpenseDaoExporter.GetCategoryFileName(OpenCategoriesFileDialog.FileName);
+            var categoryFileName = ExpenseDaoExporter.GetCategoryFileName(OpenTransactionsFileDialog.FileName);
             if (File.Exists(categoryFileName))
                 CategoriesFileNameField.Text = categoryFileName;
         }

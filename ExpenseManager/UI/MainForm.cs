@@ -151,28 +151,22 @@ public partial class MainForm : Form
             importAccountDialog = new ImportAccountDialog();
         if (importAccountDialog.ShowDialog(databaseManager) != DialogResult.OK)
             return;
-        try {
-            RunTaskAsyncWithProgressBar($"Importing {importAccountDialog.AccountName}",
-                ProgressBarStyle.Marquee,
-                (_) => ExpenseDaoExporter.ImportExpensesDaoAsync(importAccountDialog.TransactionsFileName,
-                                                                 importAccountDialog.CategoriesFileName,
-                                                                 importAccountDialog.AccountName, databaseManager).Wait(),
-                task => PostImportUserCallback(task, importAccountDialog.AccountName));
-        }
-        catch (Exception ex) {
-            MessageBox.Show(ex.ToString());
-        }
+        RunTaskAsyncWithProgressBar($"Importing {importAccountDialog.AccountName}",
+            ProgressBarStyle.Marquee,
+            (_) => ExpenseDaoExporter.ImportExpensesDaoAsync(importAccountDialog.TransactionsFileName,
+                                                                importAccountDialog.CategoriesFileName,
+                                                                importAccountDialog.AccountName, databaseManager).Wait(),
+            task => PostImportUserCallback(task, importAccountDialog.AccountName));
     }
 
     private void PostImportUserCallback(Task task, string username) {
         if (task.Exception is not null) {
-            databaseManager.CloseUser(username);
-            databaseManager.DeleteUser(username);
             if (MessageBox.Show($"Failed to import account {username} from CSV due to an error.\n\n\n Do you want to view technical information of the error?",
                 "Error",
                 MessageBoxButtons.YesNo) == DialogResult.Yes) {
                 MessageBox.Show(task.Exception.InnerException is null ? task.Exception.Message : task.Exception.InnerException.Message.ToString());
             }
+            databaseManager.CloseUser(username);
         }
         else {
             OpenDatabase(username);

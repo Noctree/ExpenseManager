@@ -169,6 +169,7 @@
             this.Controls.Add(this.AccountTabsContainer);
             this.Controls.Add(this.label1);
             this.Name = "MainForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Expense Manager";
             this.Shown += new System.EventHandler(this.OnUIInitialized);
             this.Resize += new System.EventHandler(this.OnResize);

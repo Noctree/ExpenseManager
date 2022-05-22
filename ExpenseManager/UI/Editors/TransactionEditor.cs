@@ -41,7 +41,8 @@ public partial class TransactionEditor : Form
     private void ModifyTransaction(Transaction transaction) {
         transaction.Date = DateOnly.Parse(DateField.Text);
         transaction.Amount = decimal.Parse(AmountField.Text, NumberStyles.Currency, CultureInfo.InvariantCulture);
-        transaction.Category = categoryList[CategoryComboBox.SelectedIndex];
+        if (CategoryComboBox.SelectedIndex != -1)
+            transaction.Category = categoryList[CategoryComboBox.SelectedIndex];
         transaction.Description = DescriptionField.Text;
     }
 

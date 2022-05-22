@@ -36,13 +36,16 @@ public class ExpensesDAO : IDisposable
         TransactionReconstructor = new SqlTransactionReconstructor();
 
         var globalDefaultCategory = Category.Default;
-        DefaultCategory = categoriesTable.Create()
-            ? AddCategory(globalDefaultCategory, out var addedDefaultCategory)
-                ? addedDefaultCategory
-                : throw new ApplicationException("Failed to create default category")
-            : TryGetCategory(globalDefaultCategory.Name, out var localDefaultCategory)
-                ? localDefaultCategory
-                : throw new ApplicationException("Failed to load default category");
+        if (categoriesTable.Create()) {
+            if (AddCategory(globalDefaultCategory, out var addedDefaultCategory))
+                DefaultCategory = addedDefaultCategory!;
+            else
+                throw new ApplicationException("Failed to create default category");
+        }
+        else if (TryGetCategory(globalDefaultCategory.Name, out var localDefaultCategory))
+            DefaultCategory = localDefaultCategory;
+        else
+            throw new ApplicationException("Failed to load default category");
         transactionsTable.Create();
     }
 
@@ -190,6 +193,7 @@ public class ExpensesDAO : IDisposable
                 // TODO: dispose managed state (managed objects)
             }
 
+            dbConnection.Close();
             dbConnection.Dispose();
             categoriesTable.Dispose();
             transactionsTable.Dispose();

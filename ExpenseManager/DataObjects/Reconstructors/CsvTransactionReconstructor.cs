@@ -12,6 +12,8 @@ internal class CsvTransactionReconstructor : IObjectCsvReconstructor<Transaction
 
     public CsvTransactionReconstructor(IEnumerable<Category> categories) {
         this.categories = categories.ToDictionary(category => category.Id ?? throw new ArgumentNullException($"Category {category.Name}has NULL ID"));
+        if (this.categories.Count == 0)
+            throw new ArgumentException("At least one category must be supplied");
     }
 
     public Transaction ReconstructObject() => transaction;
@@ -27,8 +29,9 @@ internal class CsvTransactionReconstructor : IObjectCsvReconstructor<Transaction
             case 2:
                 int index = int.Parse(value, CultureInfo.InvariantCulture);
                 if (index < 0 || index >= categories.Count)
-                    throw new ArgumentOutOfRangeException("Category ID is invalid");
-                transaction.Category = categories[int.Parse(value, CultureInfo.InvariantCulture)];
+                    transaction.Category = categories.Values.First();
+                else
+                    transaction.Category = categories[int.Parse(value, CultureInfo.InvariantCulture)];
                 break;
             case 3:
                 transaction.Description = value;

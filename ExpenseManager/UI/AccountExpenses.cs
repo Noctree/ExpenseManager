@@ -1,10 +1,11 @@
-﻿using ExpenseManager.DataObjects;
+﻿using System.Globalization;
+using ExpenseManager.DataObjects;
 using ExpenseManager.UI.Components;
-using System.Globalization;
 
 namespace ExpenseManager.UI;
 
-public partial class AccountExpenses : UserControl {
+public partial class AccountExpenses : UserControl
+{
     private Panel? overlay;
     private CategoriesView? categoriesView;
     private TransactionEditor? transactionEditor;

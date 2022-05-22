@@ -63,7 +63,8 @@ public partial class CategoriesView : Form
             if (dao.AddCategory(category, out var addedCategory)) {
                 CategoryDataGridView.AddRow(addedCategory!);
                 CategoryDataGridView.Refresh();
-            } else
+            }
+            else
                 MessageBox.Show("Failed to add category", "Error", MessageBoxButtons.OK);
         }
     }

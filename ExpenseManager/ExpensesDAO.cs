@@ -42,7 +42,8 @@ public class ExpensesDAO : IDisposable
                 DefaultCategory = addedDefaultCategory!;
             else
                 throw new ApplicationException("Failed to create default category");
-        } else {
+        }
+        else {
             if (TryGetCategory(globalDefaultCategory.Name, out var localDefaultCategory))
                 DefaultCategory = localDefaultCategory;
             else
@@ -105,7 +106,7 @@ public class ExpensesDAO : IDisposable
 
     public bool AddTransaction(Transaction transaction, out Transaction? addedTransaction) {
         var result = transactionsTable.InsertRow(TransactionDeconstructor, transaction) != 0;
-        addedTransaction = result? new Transaction(transaction, transactionsTable.GetLastPrimaryKeyId()) : null;
+        addedTransaction = result ? new Transaction(transaction, transactionsTable.GetLastPrimaryKeyId()) : null;
         return result;
     }
 

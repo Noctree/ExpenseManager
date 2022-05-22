@@ -176,7 +176,7 @@ public static class SqlCommandGenerator
         sb.Append(';');
         return sb.ToString();
     }
-    
+
     public static string CreateDeleteCommandByIdMultiple<T>(SqlTable table, IObjectSqlDeconstructor<T> deconstructor, IReadOnlyList<T> targets) {
         sb.Clear();
         CreateDeleteHeader(table, sb);

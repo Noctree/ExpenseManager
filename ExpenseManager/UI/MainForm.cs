@@ -1,5 +1,3 @@
-using System.IO;
-using ExpenseManager.CSV;
 using ExpenseManager.UI.Components;
 
 namespace ExpenseManager.UI;
@@ -119,7 +117,8 @@ public partial class MainForm : Form
         if (MessageBox.Show("Close program?", "Are you sure?", MessageBoxButtons.YesNo) == DialogResult.Yes) {
             close = true;
             Close();
-        } else if (e is not null){
+        }
+        else if (e is not null) {
             e.Cancel = true;
         }
     }
@@ -144,8 +143,9 @@ public partial class MainForm : Form
             if (MessageBox.Show($"Failed to export account {username} as CSV due to an error.\n\n\n Do you want to view technical information of the error?",
                 "Error",
                 MessageBoxButtons.YesNo) == DialogResult.Yes)
-                    MessageBox.Show(task.Exception.InnerException is null ? task.Exception.Message : task.Exception.InnerException.Message.ToString());
-        } else {
+                MessageBox.Show(task.Exception.InnerException is null ? task.Exception.Message : task.Exception.InnerException.Message.ToString());
+        }
+        else {
             MessageBox.Show($"Account {username} exported as CSV successfully!", "Success");
         }
     }
@@ -162,7 +162,8 @@ public partial class MainForm : Form
                                                                  importAccountDialog.CategoriesFileName,
                                                                  importAccountDialog.AccountName, databaseManager).Wait(),
                 task => PostImportUserCallback(task, importAccountDialog.AccountName));
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
             MessageBox.Show(ex.ToString());
         }
     }
@@ -174,8 +175,9 @@ public partial class MainForm : Form
             if (MessageBox.Show($"Failed to import account {username} from CSV due to an error.\n\n\n Do you want to view technical information of the error?",
                 "Error",
                 MessageBoxButtons.YesNo) == DialogResult.Yes)
-                MessageBox.Show(task.Exception.InnerException is null? task.Exception.Message : task.Exception.InnerException.Message.ToString());
-        } else {
+                MessageBox.Show(task.Exception.InnerException is null ? task.Exception.Message : task.Exception.InnerException.Message.ToString());
+        }
+        else {
             OpenDatabase(username);
         }
     }

@@ -1,8 +1,4 @@
 ﻿using System.IO;
-using ExpenseManager.SQLite;
-using System.Text;
-using System.Globalization;
-using ExpenseManager.Utilities;
 
 namespace ExpenseManager.CSV;
 public static class CsvExporter

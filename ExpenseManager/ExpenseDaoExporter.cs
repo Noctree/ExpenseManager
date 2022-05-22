@@ -1,10 +1,10 @@
 ﻿using System.IO;
 using ExpenseManager.CSV;
-using ExpenseManager.DataObjects;
 using ExpenseManager.DataObjects.Conversion;
 
 namespace ExpenseManager;
-public static class ExpenseDaoExporter {
+public static class ExpenseDaoExporter
+{
     public static async Task ExportExpensesDaoAsync(string filePath, ExpensesDAO dao) {
         await CsvExporter.ExportAsync(filePath, new CsvTransactionDeconstructor(dao.TransactionDeconstructor.ColumnNames), dao.GetTransactions());
         var categoriesFileName = GetCategoryFileName(filePath);

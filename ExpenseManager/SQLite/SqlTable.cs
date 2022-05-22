@@ -1,6 +1,7 @@
 ﻿namespace ExpenseManager.SQLite;
 
-public class SqlTable : IDisposable {
+public class SqlTable : IDisposable
+{
     private SqlTableDescriptor descriptor;
     private bool disposedValue;
 

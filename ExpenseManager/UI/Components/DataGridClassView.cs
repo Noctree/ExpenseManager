@@ -118,7 +118,8 @@ public class DataGridClassView<T> : DataGridView where T : notnull
         if (ColumnSortComparers.TryGetValue(e.Column.Index, out var comparer)) {
             e.SortResult = comparer((T)e.CellValue1, (T)e.CellValue2);
             e.Handled = true;
-        } else
+        }
+        else
             base.OnSortCompare(e);
     }
 

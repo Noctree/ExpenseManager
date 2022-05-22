@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using ExpenseManager.DataObjects;
+﻿using ExpenseManager.DataObjects;
 
 namespace ExpenseManager.UI;
 public partial class CategoryPicker : Form
@@ -18,7 +16,7 @@ public partial class CategoryPicker : Form
             this.categories.Add(i, categories[i]);
         CategoryComboBox.Items.Clear();
         CategoryComboBox.Items.AddRange(categories.Select(c => c.Name).ToArray());
-        CategoryComboBox.SelectedIndex = SelectedCategoryIndex < categories.Count? SelectedCategoryIndex : categories.Count - 1;
+        CategoryComboBox.SelectedIndex = SelectedCategoryIndex < categories.Count ? SelectedCategoryIndex : categories.Count - 1;
         return base.ShowDialog();
     }
 

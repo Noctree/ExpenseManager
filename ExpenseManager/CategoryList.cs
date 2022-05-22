@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using ExpenseManager.DataObjects;
+﻿using ExpenseManager.DataObjects;
 
 namespace ExpenseManager;
 public class CategoryList : List<Category>

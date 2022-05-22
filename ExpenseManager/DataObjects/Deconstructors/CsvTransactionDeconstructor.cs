@@ -1,5 +1,5 @@
-﻿using ExpenseManager.CSV;
-using System.Globalization;
+﻿using System.Globalization;
+using ExpenseManager.CSV;
 
 namespace ExpenseManager.DataObjects.Conversion;
 public class CsvTransactionDeconstructor : IObjectCsvDeconstructor<Transaction>

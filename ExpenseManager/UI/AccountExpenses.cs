@@ -1,5 +1,6 @@
 ﻿using ExpenseManager.DataObjects;
 using ExpenseManager.UI.Components;
+using System.Globalization;
 
 namespace ExpenseManager.UI;
 
@@ -12,6 +13,8 @@ public partial class AccountExpenses : UserControl {
     private AmountPicker amountPicker = new AmountPicker();
     private CategoryPicker categoryPicker = new CategoryPicker();
 
+    private NumberFormatInfo numberFormatInfo;
+
     public ExpensesDAO DAO => expensesDAO;
     public event Action<AccountExpenses>? RequestsClose;
     public AccountExpenses(ExpensesDAO dao) {
@@ -19,6 +22,12 @@ public partial class AccountExpenses : UserControl {
         InitializeComponent();
         TransactionsDataGridView.SelectionChanged += TransactionsDataGridView_SelectionChanged;
         Disposed += CleanUp;
+
+        numberFormatInfo = (NumberFormatInfo)CultureInfo.CurrentCulture.NumberFormat.Clone();
+        numberFormatInfo.CurrencyDecimalDigits = 2;
+        numberFormatInfo.NumberDecimalDigits = 2;
+        TotalBallanceCurrencyDisplay.Text = numberFormatInfo.CurrencySymbol;
+        FilteredBallanceCurrencyDisplay.Text = numberFormatInfo.CurrencySymbol;
     }
 
     public async Task PreloadDataAsync() => await TransactionsDataGridView.PreloadTransactionsAsync(expensesDAO);
@@ -76,11 +85,11 @@ public partial class AccountExpenses : UserControl {
     private void TransactionsDataGridView_OnRowsFiltered(object? sender, EventArgs e) => ComputeFilteredBallance();
 
     private void ComputeTotalBallance() {
-        TotalBallanceDisplay.Text = TransactionsDataGridView.Values.Sum(transaction => transaction.Amount).ToString(System.Globalization.CultureInfo.InvariantCulture) + " Kč";
+        TotalBallanceDisplay.Text = TransactionsDataGridView.Values.Sum(transaction => transaction.Amount).ToString("n", numberFormatInfo);
     }
 
     private void ComputeFilteredBallance() {
-        FilteredBallanceDisplay.Text = TransactionsDataGridView.GetVisibleValues().Sum(transaction => transaction.Amount).ToString(System.Globalization.CultureInfo.InvariantCulture) + " Kč";
+        FilteredBallanceDisplay.Text = TransactionsDataGridView.GetVisibleValues().Sum(transaction => transaction.Amount).ToString("n", numberFormatInfo);
     }
 
     private void OpenCategoriesPanel_Click(object sender, EventArgs e) {
@@ -114,12 +123,18 @@ public partial class AccountExpenses : UserControl {
     }
 
     private void EditTransactionButton_Click(object sender, EventArgs e) {
-        var transaction = (Transaction)TransactionsDataGridView.SelectedRows[0].Cells[0].Value;
+        var selectedRow = TransactionsDataGridView.SelectedRows[0];
+        var transaction = (Transaction)selectedRow.Cells[0].Value;
         if (transactionEditor is null)
             transactionEditor = new TransactionEditor(expensesDAO);
+        var oldTransactionId = transaction.Category.Id;
         if (transactionEditor.ShowDialog(transaction) == DialogResult.OK) {
-            if (DAO.UpdateTransaction(transaction))
+            if (DAO.UpdateTransaction(transaction)) {
+                if (transaction.Category.Id != oldTransactionId) {
+                    selectedRow.Cells[2].Value = transaction.Category;
+                }
                 TransactionsDataGridView.Refresh();
+            }
             else
                 MessageBox.Show("Failed to modify transaction", "Error", MessageBoxButtons.OK);
         }

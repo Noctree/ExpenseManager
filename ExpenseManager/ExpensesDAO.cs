@@ -12,7 +12,7 @@ public class ExpensesDAO : IDisposable
     private readonly SqlTable categoriesTable;
     private readonly SqlTable transactionsTable;
 
-    private List<Category>? cachedCategories;
+    private CategoryList? cachedCategories;
     private bool categoriesChanged;
 
     private bool disposedValue;
@@ -51,7 +51,7 @@ public class ExpensesDAO : IDisposable
         transactionsTable.Create();
     }
 
-    public List<Category> GetCategories() {
+    public CategoryList GetCategories() {
         if (cachedCategories is null || categoriesChanged) {
             cachedCategories = GetCategories_Internal();
             categoriesChanged = false;
@@ -59,12 +59,16 @@ public class ExpensesDAO : IDisposable
         return cachedCategories;
     }
 
-    private List<Category> GetCategories_Internal() {
-        var categories = new List<Category>();
+    private CategoryList GetCategories_Internal() {
+        var categories = new CategoryList();
         var columns = categoriesTable.GetRow(categoriesTable.ColumnNames);
         categories.EnsureCapacity(columns.Count);
-        foreach (var column in columns)
-            categories.Add(CategoryReconstructor.ReconstructObject(column));
+        foreach (var column in columns) {
+            var category = CategoryReconstructor.ReconstructObject(column);
+            if (category.Id is null)
+                throw new SQLiteException("Category retrieved from database has missing ID");
+            categories.Add(category);
+        }
         return categories;
     }
 
@@ -77,9 +81,9 @@ public class ExpensesDAO : IDisposable
         return true;
     }
 
-    public bool AddCategories(IReadOnlyList<Category> categories, out List<Category> addedcategories) {
+    public bool AddCategories(IReadOnlyList<Category> categories, out CategoryList addedcategories) {
         categoriesChanged = true;
-        addedcategories = new List<Category>();
+        addedcategories = new();
         var result = categoriesTable.InsertRows(CategoryDeconstructor, categories) == categories.Count;
         var lastId = categoriesTable.GetLastPrimaryKeyId();
         if (result) {
@@ -126,7 +130,10 @@ public class ExpensesDAO : IDisposable
         transactions.EnsureCapacity(columns.Count);
         foreach (var column in columns) {
             var transaction = TransactionReconstructor.ReconstructObject(column);
-            transaction.Category = categories[(int)(long)column[2] - 1];
+            var category = categories.GetById((int)(long)column[2]);
+            if (category is null)
+                throw new SQLiteException($"Transaction {transaction.Id} references a non-existant category with ID {column[2]}. Database is probably corrupted");
+            transaction.Category = category;
             transactions.Add(transaction);
         }
         return transactions;
@@ -134,7 +141,7 @@ public class ExpensesDAO : IDisposable
 
     public Task<List<Transaction>> GetTransactionsAsync() => Task.Run(GetTransactions);
 
-    public Task<List<Category>> GetCategoriesAsync() => Task.Run(GetCategories);
+    public Task<CategoryList> GetCategoriesAsync() => Task.Run(GetCategories);
 
     public bool UpdateTransaction(Transaction transaction) => transactionsTable.UpdateRow(TransactionDeconstructor, transaction) != 0;
     public bool UpdateCategory(Category category) => categoriesTable.UpdateRow(CategoryDeconstructor, category) != 0;

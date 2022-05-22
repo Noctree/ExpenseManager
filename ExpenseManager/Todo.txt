@@ -1,6 +1,9 @@
-﻿- Add transaction and category editing UI
-- Make transaction DataGridView work
-- Make Categories DataGridView work
-- Make CSV exporter/importer
-- Add IObjectReconstructor interface to ExpenseManager.SQLite and get rid of Category/Transaction.FromSqlObjects
+﻿- Add transaction and category editing UI - done
+- Make transaction DataGridView work - done
+- Make Categories DataGridView work - done
+- Make CSV exporter/importer - done
+- Add IObjectReconstructor interface to ExpenseManager.SQLite and get rid of Category/Transaction.FromSqlObjects - done
 - Get rid of Config completely, or make it static - done, made it static
+
+- Unify MessageBox.Show calls in some utility class
+- Unity Exception throwing in some utility class

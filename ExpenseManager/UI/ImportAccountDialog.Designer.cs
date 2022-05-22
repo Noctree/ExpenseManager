@@ -218,13 +218,13 @@ partial class ImportAccountDialog
             // OpenTransactionsFileDialog
             // 
             this.OpenTransactionsFileDialog.DefaultExt = "csv";
-            this.OpenTransactionsFileDialog.Filter = "CSV Files (*.csv)|.csv";
+            this.OpenTransactionsFileDialog.Filter = "CSV Files (*.csv)|*.csv";
             this.OpenTransactionsFileDialog.Title = "Select transactions file";
             // 
             // OpenCategoriesFileDialog
             // 
             this.OpenCategoriesFileDialog.DefaultExt = "csv";
-            this.OpenCategoriesFileDialog.Filter = "CSV Files (*.csv)|.csv";
+            this.OpenCategoriesFileDialog.Filter = "CSV Files (*.csv)|*.csv";
             this.OpenCategoriesFileDialog.Title = "Select categories file";
             // 
             // ImportAccountDialog
@@ -235,6 +235,7 @@ partial class ImportAccountDialog
             this.Controls.Add(this.UILayout);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "ImportAccountDialog";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Import Account";
             this.UILayout.ResumeLayout(false);
             this.UILayout.PerformLayout();

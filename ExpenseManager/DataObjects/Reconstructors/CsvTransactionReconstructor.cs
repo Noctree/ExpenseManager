@@ -9,14 +9,14 @@ using System.Globalization;
 namespace ExpenseManager.DataObjects.Conversion;
 internal class CsvTransactionReconstructor : IObjectCsvReconstructor<Transaction>
 {
-    private List<Category> categories;
+    private Dictionary<long, Category> categories;
     private Transaction transaction = new Transaction(DateOnly.MinValue, 0, Category.Default);
     public int FieldCount => 4;
 
     public int RequiredFieldCount => 4;
 
     public CsvTransactionReconstructor(IEnumerable<Category> categories) {
-        this.categories = categories.ToList();
+        this.categories = categories.ToDictionary(category => category.Id ?? throw new ArgumentNullException($"Category {category.Name}has NULL ID"));
     }
 
     public Transaction ReconstructObject() => transaction;

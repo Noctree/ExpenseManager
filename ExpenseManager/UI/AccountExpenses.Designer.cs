@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.TopUIPanelLayout = new System.Windows.Forms.TableLayoutPanel();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.ControlsUITableLayout = new System.Windows.Forms.TableLayoutPanel();
@@ -40,6 +40,8 @@
             this.BallanceUILayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.label1 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
+            this.TotalBallanceCurrencyDisplay = new System.Windows.Forms.Label();
+            this.FilteredBallanceCurrencyDisplay = new System.Windows.Forms.Label();
             this.TotalBallanceDisplay = new System.Windows.Forms.Label();
             this.FilteredBallanceDisplay = new System.Windows.Forms.Label();
             this.ControlsPanelContainer = new System.Windows.Forms.GroupBox();
@@ -136,10 +138,10 @@
             this.CloneTransactionButton.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.CloneTransactionButton.Location = new System.Drawing.Point(90, 46);
-            this.CloneTransactionButton.Margin = new System.Windows.Forms.Padding(0);
+            this.CloneTransactionButton.Location = new System.Drawing.Point(92, 48);
+            this.CloneTransactionButton.Margin = new System.Windows.Forms.Padding(2);
             this.CloneTransactionButton.Name = "CloneTransactionButton";
-            this.CloneTransactionButton.Size = new System.Drawing.Size(84, 41);
+            this.CloneTransactionButton.Size = new System.Drawing.Size(80, 37);
             this.CloneTransactionButton.TabIndex = 3;
             this.CloneTransactionButton.Text = "Clone";
             this.CloneTransactionButton.UseVisualStyleBackColor = true;
@@ -150,10 +152,10 @@
             this.DeleteTransactionButton.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.DeleteTransactionButton.Location = new System.Drawing.Point(3, 46);
-            this.DeleteTransactionButton.Margin = new System.Windows.Forms.Padding(0);
+            this.DeleteTransactionButton.Location = new System.Drawing.Point(5, 48);
+            this.DeleteTransactionButton.Margin = new System.Windows.Forms.Padding(2);
             this.DeleteTransactionButton.Name = "DeleteTransactionButton";
-            this.DeleteTransactionButton.Size = new System.Drawing.Size(84, 41);
+            this.DeleteTransactionButton.Size = new System.Drawing.Size(80, 37);
             this.DeleteTransactionButton.TabIndex = 2;
             this.DeleteTransactionButton.Text = "Delete";
             this.DeleteTransactionButton.UseVisualStyleBackColor = true;
@@ -164,10 +166,10 @@
             this.EditTransactionButton.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.EditTransactionButton.Location = new System.Drawing.Point(90, 3);
-            this.EditTransactionButton.Margin = new System.Windows.Forms.Padding(0);
+            this.EditTransactionButton.Location = new System.Drawing.Point(92, 5);
+            this.EditTransactionButton.Margin = new System.Windows.Forms.Padding(2);
             this.EditTransactionButton.Name = "EditTransactionButton";
-            this.EditTransactionButton.Size = new System.Drawing.Size(84, 40);
+            this.EditTransactionButton.Size = new System.Drawing.Size(80, 36);
             this.EditTransactionButton.TabIndex = 1;
             this.EditTransactionButton.Text = "Edit";
             this.EditTransactionButton.UseVisualStyleBackColor = true;
@@ -178,10 +180,10 @@
             this.NewTransactionButton.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.NewTransactionButton.Location = new System.Drawing.Point(3, 3);
-            this.NewTransactionButton.Margin = new System.Windows.Forms.Padding(0);
+            this.NewTransactionButton.Location = new System.Drawing.Point(5, 5);
+            this.NewTransactionButton.Margin = new System.Windows.Forms.Padding(2);
             this.NewTransactionButton.Name = "NewTransactionButton";
-            this.NewTransactionButton.Size = new System.Drawing.Size(84, 40);
+            this.NewTransactionButton.Size = new System.Drawing.Size(80, 36);
             this.NewTransactionButton.TabIndex = 0;
             this.NewTransactionButton.Text = "New";
             this.NewTransactionButton.UseVisualStyleBackColor = true;
@@ -208,11 +210,14 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.BallanceUILayoutPanel.BackColor = System.Drawing.SystemColors.Control;
-            this.BallanceUILayoutPanel.ColumnCount = 2;
+            this.BallanceUILayoutPanel.ColumnCount = 3;
             this.BallanceUILayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 75F));
             this.BallanceUILayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.BallanceUILayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 50F));
             this.BallanceUILayoutPanel.Controls.Add(this.label1, 0, 0);
             this.BallanceUILayoutPanel.Controls.Add(this.label3, 0, 1);
+            this.BallanceUILayoutPanel.Controls.Add(this.TotalBallanceCurrencyDisplay, 2, 0);
+            this.BallanceUILayoutPanel.Controls.Add(this.FilteredBallanceCurrencyDisplay, 2, 1);
             this.BallanceUILayoutPanel.Controls.Add(this.TotalBallanceDisplay, 1, 0);
             this.BallanceUILayoutPanel.Controls.Add(this.FilteredBallanceDisplay, 1, 1);
             this.BallanceUILayoutPanel.Location = new System.Drawing.Point(6, 22);
@@ -232,7 +237,7 @@
             this.label1.BackColor = System.Drawing.SystemColors.Control;
             this.label1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.label1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.label1.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.label1.Font = new System.Drawing.Font("Segoe UI Semibold", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.label1.Location = new System.Drawing.Point(3, 3);
             this.label1.Margin = new System.Windows.Forms.Padding(3);
             this.label1.Name = "label1";
@@ -250,7 +255,7 @@
             this.label3.BackColor = System.Drawing.SystemColors.Control;
             this.label3.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.label3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.label3.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.label3.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.label3.Location = new System.Drawing.Point(3, 48);
             this.label3.Margin = new System.Windows.Forms.Padding(3);
             this.label3.Name = "label3";
@@ -259,6 +264,36 @@
             this.label3.Text = "Filtered:";
             this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // TotalBallanceCurrencyDisplay
+            // 
+            this.TotalBallanceCurrencyDisplay.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.TotalBallanceCurrencyDisplay.AutoSize = true;
+            this.TotalBallanceCurrencyDisplay.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.TotalBallanceCurrencyDisplay.Font = new System.Drawing.Font("Segoe UI Semibold", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.TotalBallanceCurrencyDisplay.Location = new System.Drawing.Point(224, 0);
+            this.TotalBallanceCurrencyDisplay.Name = "TotalBallanceCurrencyDisplay";
+            this.TotalBallanceCurrencyDisplay.Size = new System.Drawing.Size(44, 45);
+            this.TotalBallanceCurrencyDisplay.TabIndex = 3;
+            this.TotalBallanceCurrencyDisplay.Text = "Kč";
+            this.TotalBallanceCurrencyDisplay.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // FilteredBallanceCurrencyDisplay
+            // 
+            this.FilteredBallanceCurrencyDisplay.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.FilteredBallanceCurrencyDisplay.AutoSize = true;
+            this.FilteredBallanceCurrencyDisplay.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.FilteredBallanceCurrencyDisplay.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.FilteredBallanceCurrencyDisplay.Location = new System.Drawing.Point(224, 45);
+            this.FilteredBallanceCurrencyDisplay.Name = "FilteredBallanceCurrencyDisplay";
+            this.FilteredBallanceCurrencyDisplay.Size = new System.Drawing.Size(44, 45);
+            this.FilteredBallanceCurrencyDisplay.TabIndex = 4;
+            this.FilteredBallanceCurrencyDisplay.Text = "Kč";
+            this.FilteredBallanceCurrencyDisplay.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
             // TotalBallanceDisplay
             // 
             this.TotalBallanceDisplay.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -266,12 +301,12 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.TotalBallanceDisplay.AutoSize = true;
             this.TotalBallanceDisplay.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.TotalBallanceDisplay.Font = new System.Drawing.Font("Segoe UI Semibold", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.TotalBallanceDisplay.Font = new System.Drawing.Font("Segoe UI Semibold", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.TotalBallanceDisplay.Location = new System.Drawing.Point(78, 0);
             this.TotalBallanceDisplay.Name = "TotalBallanceDisplay";
-            this.TotalBallanceDisplay.Size = new System.Drawing.Size(190, 45);
-            this.TotalBallanceDisplay.TabIndex = 3;
-            this.TotalBallanceDisplay.Text = "42 000 000 Kč";
+            this.TotalBallanceDisplay.Size = new System.Drawing.Size(140, 45);
+            this.TotalBallanceDisplay.TabIndex = 5;
+            this.TotalBallanceDisplay.Text = "0";
             this.TotalBallanceDisplay.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // FilteredBallanceDisplay
@@ -284,9 +319,9 @@
             this.FilteredBallanceDisplay.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.FilteredBallanceDisplay.Location = new System.Drawing.Point(78, 45);
             this.FilteredBallanceDisplay.Name = "FilteredBallanceDisplay";
-            this.FilteredBallanceDisplay.Size = new System.Drawing.Size(190, 45);
-            this.FilteredBallanceDisplay.TabIndex = 4;
-            this.FilteredBallanceDisplay.Text = "69 420 Kč";
+            this.FilteredBallanceDisplay.Size = new System.Drawing.Size(140, 45);
+            this.FilteredBallanceDisplay.TabIndex = 6;
+            this.FilteredBallanceDisplay.Text = "0";
             this.FilteredBallanceDisplay.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // ControlsPanelContainer
@@ -331,10 +366,10 @@
             this.ClearFilters.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.ClearFilters.Location = new System.Drawing.Point(90, 46);
-            this.ClearFilters.Margin = new System.Windows.Forms.Padding(0);
+            this.ClearFilters.Location = new System.Drawing.Point(92, 48);
+            this.ClearFilters.Margin = new System.Windows.Forms.Padding(2);
             this.ClearFilters.Name = "ClearFilters";
-            this.ClearFilters.Size = new System.Drawing.Size(84, 41);
+            this.ClearFilters.Size = new System.Drawing.Size(80, 37);
             this.ClearFilters.TabIndex = 3;
             this.ClearFilters.Text = "Clear";
             this.ClearFilters.UseVisualStyleBackColor = true;
@@ -345,10 +380,10 @@
             this.FilterByCategoryButton.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.FilterByCategoryButton.Location = new System.Drawing.Point(3, 46);
-            this.FilterByCategoryButton.Margin = new System.Windows.Forms.Padding(0);
+            this.FilterByCategoryButton.Location = new System.Drawing.Point(5, 48);
+            this.FilterByCategoryButton.Margin = new System.Windows.Forms.Padding(2);
             this.FilterByCategoryButton.Name = "FilterByCategoryButton";
-            this.FilterByCategoryButton.Size = new System.Drawing.Size(84, 41);
+            this.FilterByCategoryButton.Size = new System.Drawing.Size(80, 37);
             this.FilterByCategoryButton.TabIndex = 2;
             this.FilterByCategoryButton.Text = "By Category";
             this.FilterByCategoryButton.UseVisualStyleBackColor = true;
@@ -359,10 +394,10 @@
             this.FilterByAmountButton.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.FilterByAmountButton.Location = new System.Drawing.Point(90, 3);
-            this.FilterByAmountButton.Margin = new System.Windows.Forms.Padding(0);
+            this.FilterByAmountButton.Location = new System.Drawing.Point(92, 5);
+            this.FilterByAmountButton.Margin = new System.Windows.Forms.Padding(2);
             this.FilterByAmountButton.Name = "FilterByAmountButton";
-            this.FilterByAmountButton.Size = new System.Drawing.Size(84, 40);
+            this.FilterByAmountButton.Size = new System.Drawing.Size(80, 36);
             this.FilterByAmountButton.TabIndex = 1;
             this.FilterByAmountButton.Text = "By Amount";
             this.FilterByAmountButton.UseVisualStyleBackColor = true;
@@ -373,10 +408,10 @@
             this.FilterByDateButton.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.FilterByDateButton.Location = new System.Drawing.Point(3, 3);
-            this.FilterByDateButton.Margin = new System.Windows.Forms.Padding(0);
+            this.FilterByDateButton.Location = new System.Drawing.Point(5, 5);
+            this.FilterByDateButton.Margin = new System.Windows.Forms.Padding(2);
             this.FilterByDateButton.Name = "FilterByDateButton";
-            this.FilterByDateButton.Size = new System.Drawing.Size(84, 40);
+            this.FilterByDateButton.Size = new System.Drawing.Size(80, 36);
             this.FilterByDateButton.TabIndex = 0;
             this.FilterByDateButton.Text = "By Date";
             this.FilterByDateButton.UseVisualStyleBackColor = true;
@@ -417,10 +452,10 @@
             // 
             this.OpenCategoriesPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.OpenCategoriesPanel.Location = new System.Drawing.Point(3, 3);
-            this.OpenCategoriesPanel.Margin = new System.Windows.Forms.Padding(0);
+            this.OpenCategoriesPanel.Location = new System.Drawing.Point(5, 5);
+            this.OpenCategoriesPanel.Margin = new System.Windows.Forms.Padding(2);
             this.OpenCategoriesPanel.Name = "OpenCategoriesPanel";
-            this.OpenCategoriesPanel.Size = new System.Drawing.Size(108, 35);
+            this.OpenCategoriesPanel.Size = new System.Drawing.Size(104, 33);
             this.OpenCategoriesPanel.TabIndex = 0;
             this.OpenCategoriesPanel.Text = "Categories";
             this.OpenCategoriesPanel.UseVisualStyleBackColor = true;
@@ -431,10 +466,10 @@
             this.CloseDatabaseButton.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.CloseDatabaseButton.Location = new System.Drawing.Point(3, 43);
-            this.CloseDatabaseButton.Margin = new System.Windows.Forms.Padding(0);
+            this.CloseDatabaseButton.Location = new System.Drawing.Point(5, 45);
+            this.CloseDatabaseButton.Margin = new System.Windows.Forms.Padding(2);
             this.CloseDatabaseButton.Name = "CloseDatabaseButton";
-            this.CloseDatabaseButton.Size = new System.Drawing.Size(108, 38);
+            this.CloseDatabaseButton.Size = new System.Drawing.Size(104, 34);
             this.CloseDatabaseButton.TabIndex = 1;
             this.CloseDatabaseButton.Text = "Close";
             this.CloseDatabaseButton.UseVisualStyleBackColor = true;
@@ -445,8 +480,8 @@
             this.TransactionsDataGridView.AllowUserToAddRows = false;
             this.TransactionsDataGridView.AllowUserToDeleteRows = false;
             this.TransactionsDataGridView.AllowUserToResizeRows = false;
-            dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.TransactionsDataGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.TransactionsDataGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle2;
             this.TransactionsDataGridView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
@@ -564,8 +599,6 @@
         private Button DeleteTransactionButton;
         private Button EditTransactionButton;
         private Button NewTransactionButton;
-        private Label TotalBallanceDisplay;
-        private Label FilteredBallanceDisplay;
         private ExpenseManager.UI.Components.TransactionsDataGridView TransactionsDataGridView;
         private TableLayoutPanel UILayout;
         private GroupBox groupBox2;
@@ -576,5 +609,9 @@
         private DataGridViewTextBoxColumn TransactionAmountView;
         private DataGridViewTextBoxColumn TransactionCategoryView;
         private DataGridViewTextBoxColumn TransactionDescriptionView;
+        private Label TotalBallanceCurrencyDisplay;
+        private Label FilteredBallanceCurrencyDisplay;
+        private Label TotalBallanceDisplay;
+        private Label FilteredBallanceDisplay;
     }
 }

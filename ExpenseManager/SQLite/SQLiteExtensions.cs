@@ -34,7 +34,9 @@ public static class SQLiteExtensions
     public static int ExecuteNonQueryWithLogging(this SQLiteCommand command, [CallerMemberName] string callerMethod = "unknown", [CallerFilePath] string fileName = "unknown") {
         if (command.CommandText.Length < LoggingMessageLengthLimit)
             Debug.WriteLine($"[{Path.GetFileNameWithoutExtension(fileName)}.{callerMethod}]: Execute query - {command.CommandText}");
-        return command.ExecuteNonQuery();
+        var result = command.ExecuteNonQuery();
+        Debug.WriteLine($"[{Path.GetFileNameWithoutExtension(fileName)}.{callerMethod}]: Query result: {result}");
+        return result;
     }
 
     public static SQLiteDataReader ExecuteReaderWithLogging(this SQLiteCommand command, [CallerMemberName] string callerMethod = "unknown", [CallerFilePath] string fileName = "unknown") {

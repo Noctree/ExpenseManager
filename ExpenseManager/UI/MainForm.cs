@@ -81,9 +81,9 @@ public partial class MainForm : Form
     private void RunTaskAsyncWithProgressBar(string taskName, ProgressBarStyle progressBarStyle, Action<ProgressBarStripDisplay.ProgressBarContainer> action, Action<Task>? callback) {
         var container = StatusBarContainer.AddProgressBar(taskName, progressBarStyle);
         var task = Task.Run(() => action(container));
-        task = task.ContinueWith((_) => InvokeSafely(() => container.Dispose()));
         if (callback is not null)
-            task.ContinueWith((t) => InvokeSafely(callback, t));
+            task = task.ContinueWith((t) => InvokeSafely(callback, t));
+        task.ContinueWith((_) => InvokeSafely(() => container.Dispose()));
     }
 
     private void InvokeSafely(Action action) {
@@ -125,6 +125,10 @@ public partial class MainForm : Form
     }
 
     private void ExportAsCsvButton_Click(object sender, EventArgs e) {
+        if (openDatabases.Count == 0) {
+            MessageBox.Show("No database open", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            return;
+        }
         if (ExportDatabaseDialog.ShowDialog() != DialogResult.OK)
             return;
         var tab = AccountTabsContainer.SelectedTab;
@@ -137,10 +141,10 @@ public partial class MainForm : Form
 
     private void PostCsvExportCallback(Task task, string username) {
         if (task.Exception is not null) {
-            if (MessageBox.Show($"Failed to export account {username} as CSV due to an error.\n\n\n Do you want to view a technical description of the error?",
+            if (MessageBox.Show($"Failed to export account {username} as CSV due to an error.\n\n\n Do you want to view technical information of the error?",
                 "Error",
                 MessageBoxButtons.YesNo) == DialogResult.Yes)
-                    MessageBox.Show(task.Exception.Message);
+                    MessageBox.Show(task.Exception.InnerException is null ? task.Exception.Message : task.Exception.InnerException.Message.ToString());
         } else {
             MessageBox.Show($"Account {username} exported as CSV successfully!", "Success");
         }
@@ -151,20 +155,26 @@ public partial class MainForm : Form
             importAccountDialog = new ImportAccountDialog();
         if (importAccountDialog.ShowDialog(databaseManager) != DialogResult.OK)
             return;
-        RunTaskAsyncWithProgressBar($"Importing {importAccountDialog.AccountName}",
-            ProgressBarStyle.Marquee,
-            (_) => ExpenseDaoExporter.ImportExpensesDaoAsync(importAccountDialog.TransactionsFileName,
-                                                             importAccountDialog.CategoriesFileName,
-                                                             importAccountDialog.AccountName, databaseManager).Wait(),
-            task => PostImportUserCallback(task, importAccountDialog.AccountName));
+        try {
+            RunTaskAsyncWithProgressBar($"Importing {importAccountDialog.AccountName}",
+                ProgressBarStyle.Marquee,
+                (_) => ExpenseDaoExporter.ImportExpensesDaoAsync(importAccountDialog.TransactionsFileName,
+                                                                 importAccountDialog.CategoriesFileName,
+                                                                 importAccountDialog.AccountName, databaseManager).Wait(),
+                task => PostImportUserCallback(task, importAccountDialog.AccountName));
+        } catch (Exception ex) {
+            MessageBox.Show(ex.ToString());
+        }
     }
 
     private void PostImportUserCallback(Task task, string username) {
         if (task.Exception is not null) {
-            if (MessageBox.Show($"Failed to import account {username} from CSV due to an error.\n\n\n Do you want to view a technical description of the error?",
+            databaseManager.CloseUser(username);
+            databaseManager.DeleteUser(username);
+            if (MessageBox.Show($"Failed to import account {username} from CSV due to an error.\n\n\n Do you want to view technical information of the error?",
                 "Error",
                 MessageBoxButtons.YesNo) == DialogResult.Yes)
-                MessageBox.Show(task.Exception.Message);
+                MessageBox.Show(task.Exception.InnerException is null? task.Exception.Message : task.Exception.InnerException.Message.ToString());
         } else {
             OpenDatabase(username);
         }

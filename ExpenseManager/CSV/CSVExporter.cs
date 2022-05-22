@@ -9,7 +9,7 @@ public static class CsvExporter
 {
     private const char Delimiter = ';';
     private static StringBuilder sb = new StringBuilder();
-    public static async Task ExportAsync<T>(string fileName, IObjectCsvDeconstructor<T> deconstructor, IReadOnlyList<T> values) {
+    public static async Task ExportAsync<T>(string fileName, IObjectCsvDeconstructor<T> deconstructor, IEnumerable<T> values) {
         using FileStream fs = File.OpenWrite(fileName);
         using var writer = new StreamWriter(fs);
         for (int i = 0; i < deconstructor.FieldCount; i++) {

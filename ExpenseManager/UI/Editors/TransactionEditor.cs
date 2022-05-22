@@ -1,6 +1,6 @@
-﻿using ExpenseManager.DataObjects;
+﻿using System.Globalization;
+using ExpenseManager.DataObjects;
 using ExpenseManager.UI.Components;
-using System.Globalization;
 
 namespace ExpenseManager.UI;
 public partial class TransactionEditor : Form
@@ -8,6 +8,7 @@ public partial class TransactionEditor : Form
     private ExpensesDAO dao;
     private Transaction transaction;
     private DateDialog datePicker = new DateDialog();
+    private CategoryList categoryList;
     public TransactionEditor(ExpensesDAO dao) {
         this.dao = dao;
         InitializeComponent();
@@ -23,9 +24,9 @@ public partial class TransactionEditor : Form
 
     private void LoadCategories() {
         CategoryComboBox.Items.Clear();
-        var categories = dao.GetCategories();
-        for (int i = 0; i < categories.Count; ++i) {
-            CategoryComboBox.Items.Add(categories[i].Name);
+        categoryList = dao.GetCategories();
+        for (int i = 0; i < categoryList.Count; ++i) {
+            CategoryComboBox.Items.Add(categoryList.GetByIndex(i).Name);
         }
     }
 
@@ -33,15 +34,14 @@ public partial class TransactionEditor : Form
         LoadCategories();
         DateField.Text = transaction.Date.ToString();
         AmountField.Text = transaction.Amount.ToString(CultureInfo.InvariantCulture);
-        CategoryComboBox.SelectedIndex = (int)transaction.Category!.Id! - 1;
+        CategoryComboBox.SelectedIndex = categoryList.IndexOf(transaction.Category);
         DescriptionField.Text = transaction.Description;
     }
 
     private void ModifyTransaction(Transaction transaction) {
         transaction.Date = DateOnly.Parse(DateField.Text);
         transaction.Amount = decimal.Parse(AmountField.Text, NumberStyles.Currency, CultureInfo.InvariantCulture);
-        Console.WriteLine($"{transaction.Category} | {dao.GetCategories()[CategoryComboBox.SelectedIndex]} | {CategoryComboBox.SelectedIndex}");
-        transaction.Category = dao.GetCategories()[CategoryComboBox.SelectedIndex];
+        transaction.Category = categoryList[CategoryComboBox.SelectedIndex];
         transaction.Description = DescriptionField.Text;
     }
 

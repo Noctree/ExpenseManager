@@ -5,7 +5,7 @@ using ExpenseManager.DataObjects;
 namespace ExpenseManager.UI;
 public partial class CategoryPicker : Form
 {
-    private List<Category> categories;
+    private Dictionary<int, Category> categories;
     public int SelectedCategoryIndex { get; set; } = 0;
     public Category SelectedCategory => categories[SelectedCategoryIndex];
     public CategoryPicker() {
@@ -13,9 +13,11 @@ public partial class CategoryPicker : Form
     }
 
     public DialogResult ShowDialog(List<Category> categories) {
-        this.categories = categories;
+        this.categories = new();
+        for (int i = 0; i < categories.Count; ++i)
+            this.categories.Add(i, categories[i]);
         CategoryComboBox.Items.Clear();
-        CategoryComboBox.Items.AddRange(categories.ConvertAll(c => c.Name).ToArray());
+        CategoryComboBox.Items.AddRange(categories.Select(c => c.Name).ToArray());
         CategoryComboBox.SelectedIndex = SelectedCategoryIndex < categories.Count? SelectedCategoryIndex : categories.Count - 1;
         return base.ShowDialog();
     }

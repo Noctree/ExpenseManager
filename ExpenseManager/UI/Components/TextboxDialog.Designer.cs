@@ -79,6 +79,7 @@
             this.AbortButton.TabIndex = 0;
             this.AbortButton.Text = "Cancel";
             this.AbortButton.UseVisualStyleBackColor = true;
+            this.AbortButton.Click += new System.EventHandler(this.OnCancel);
             // 
             // TextboxDialog
             // 

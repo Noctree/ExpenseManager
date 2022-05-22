@@ -40,7 +40,7 @@ public partial class TextboxDialog : Form
 
     private void OnConfirm(object sender, EventArgs e) {
         if (InputVerifier != null && !InputVerifier(Textbox.Text)) {
-            MessageBox.Show(InvalidInputMessage, "Error", MessageBoxButtons.OK);
+            MessageBoxUtils.ShowError(InvalidInputMessage);
             return;
         }
         DialogResult = DialogResult.OK;

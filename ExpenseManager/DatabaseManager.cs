@@ -49,7 +49,7 @@ public class DatabaseManager
     public void DeleteUser(string username) {
         if (UserExists(username)) {
             if (IsUserOpen(username))
-                CloseUser(username);
+                CloseUserBeforeDeletion(username);
             foreach (var file in Directory.GetFiles(DatabaseDirectory, $"{username}.*"))
                 File.Delete(file);
             databases.Remove(username);
@@ -64,6 +64,18 @@ public class DatabaseManager
         var dao = new ExpensesDAO(CreateConnection(username));
         openUsers.Add(username, dao);
         return dao;
+    }
+
+    /// <summary>
+    /// Closes the database access and waits for file handles to be disposed in order to delete the files.
+    /// This dirty hack is needed because of 
+    /// <see href="https://stackoverflow.com/questions/8511901/system-data-sqlite-close-not-releasing-database-file">the way SQLite releases file handles</see>
+    /// </summary>
+    /// <param name="username"></param>
+    private void CloseUserBeforeDeletion(string username) {
+        CloseUser(username);
+        GC.Collect();
+        GC.WaitForPendingFinalizers();
     }
 
     public void CloseUser(string username) {

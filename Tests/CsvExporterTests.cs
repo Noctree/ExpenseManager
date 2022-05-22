@@ -4,10 +4,10 @@ public class CsvExporterTests
 {
     [Fact]
     public void RandomDatabaseExportAndImport() {
-        var exportUsername = "Export Test";
-        var importUsername = "Import Test";
+        const string exportUsername = "Export Test";
+        const string importUsername = "Import Test";
 
-        var exportFileName = "ExportTest.csv";
+        const string exportFileName = "ExportTest.csv";
 
         var dbManager = new DatabaseManager(Constants.DatabasesPath);
         dbManager.CreateNewUser(exportUsername);
@@ -33,5 +33,9 @@ public class CsvExporterTests
         Assert.Equal(originalTransactions.Count, importedTransactions.Count);
         for (int i = 0; i < importedTransactions.Count; i++)
             Assert.True(Transaction.AreEqual(originalTransactions[i], importedTransactions[i]));
+        dbManager.CloseAllUsers();
+        GC.Collect();
+        GC.WaitForPendingFinalizers();
+        dbManager.DeleteAllDatabases();
     }
 }

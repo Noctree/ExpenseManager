@@ -15,7 +15,7 @@ public partial class OpenDatabaseDialog : Form
         this.databaseManager = databaseManager;
         textboxDialog = new TextboxDialog() {
             Title = "New Account Name",
-            InvalidInputMessage = "Username already taken",
+            InvalidInputMessage = "Account with that name already exists!",
             InputVerifier = (username) => !databaseManager.UserExists(username)
         };
         InitializeComponent();
@@ -48,7 +48,7 @@ public partial class OpenDatabaseDialog : Form
 
     private void Finish(DialogResult result, string selectedUser) {
         if (result == DialogResult.OK && databaseManager.IsUserOpen(selectedUser)) {
-            MessageBox.Show("Selected account is already open", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBoxUtils.ShowError("Selected account is already open");
             return;
         }
         SelectedUser = selectedUser;
@@ -63,9 +63,9 @@ public partial class OpenDatabaseDialog : Form
 
     private void DeleteUserButton_Click(object sender, EventArgs e) {
         string username = (string)AccountsListView.SelectedItem;
-        if (MessageBox.Show($"Delete account {username}?\nThis action is irreversible!", "Are you sure?", MessageBoxButtons.OKCancel) == DialogResult.OK) {
+        if (MessageBoxUtils.ShowConfirmation($"Delete account {username}?\nThis action is irreversible!", true)) {
             if (databaseManager.IsUserOpen(username)) {
-                MessageBox.Show("Cannot delete this accout as it is currently open");
+                MessageBoxUtils.ShowError("Cannot delete this accout as it is currently open");
             }
             else {
                 databaseManager.DeleteUser(username);

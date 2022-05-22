@@ -5,9 +5,9 @@ public partial class ImportAccountDialog : Form
 {
     private DatabaseManager databaseManager;
 
-    public string TransactionsFileName { get; set; }
-    public string CategoriesFileName { get; set; }
-    public string AccountName { get; set; }
+    public string TransactionsFileName { get; set; } = string.Empty;
+    public string CategoriesFileName { get; set; } = string.Empty;
+    public string AccountName { get; set; } = string.Empty;
     public ImportAccountDialog() {
         InitializeComponent();
     }
@@ -48,15 +48,15 @@ public partial class ImportAccountDialog : Form
 
     private bool VerifyInput() {
         if (!File.Exists(TransactionsFileNameField.Text)) {
-            MessageBox.Show($"File {TransactionsFileNameField.Text} does not exist!", "Error", MessageBoxButtons.OKCancel, MessageBoxIcon.Error);
+            MessageBoxUtils.ShowError($"File {TransactionsFileNameField.Text} does not exist!");
             return false;
         }
         if (!File.Exists(CategoriesFileNameField.Text)) {
-            MessageBox.Show($"File {CategoriesFileNameField.Text} does not exist!", "Error", MessageBoxButtons.OKCancel, MessageBoxIcon.Error);
+            MessageBoxUtils.ShowError($"File {CategoriesFileNameField.Text} does not exist!");
             return false;
         }
         if (databaseManager.UserExists(AccountNameField.Text)) {
-            MessageBox.Show($"Account {AccountNameField.Text} already exists!", "Error", MessageBoxButtons.OKCancel, MessageBoxIcon.Error);
+            MessageBoxUtils.ShowError($"Account {AccountNameField.Text} already exists!");
             return false;
         }
         return true;

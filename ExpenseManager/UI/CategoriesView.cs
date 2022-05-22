@@ -50,7 +50,7 @@ public partial class CategoriesView : Form
                 CategoriesModified?.Invoke();
             }
             else {
-                MessageBox.Show("Failed to modify category", "Error", MessageBoxButtons.OK);
+                MessageBoxUtils.ShowError("Failed to modify category");
             }
         }
     }
@@ -66,13 +66,13 @@ public partial class CategoriesView : Form
                 CategoryDataGridView.Refresh();
             }
             else {
-                MessageBox.Show("Failed to add category", "Error", MessageBoxButtons.OK);
+                MessageBoxUtils.ShowError("Failed to add category");
             }
         }
     }
 
     private void DeleteSelectedButton_Click(object sender, EventArgs e) {
-        if (MessageBox.Show("Delete selected categories?", "Are you sure?", MessageBoxButtons.OKCancel) != DialogResult.OK)
+        if (!MessageBoxUtils.ShowConfirmation("Delete selected categories?", true))
             return;
 
         var categories = new List<Category>();

@@ -5,7 +5,7 @@ public partial class CategoryPicker : Form
 {
     private Dictionary<int, Category> categories;
     public int SelectedCategoryIndex { get; set; } = 0;
-    public Category SelectedCategory => categories[SelectedCategoryIndex];
+    public Category SelectedCategory => categories[SelectedCategoryIndex == -1? 0 : SelectedCategoryIndex];
     public CategoryPicker() {
         InitializeComponent();
     }

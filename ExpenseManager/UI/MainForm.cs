@@ -1,4 +1,5 @@
 using ExpenseManager.UI.Components;
+using ExpenseManager.Utilities;
 
 namespace ExpenseManager.UI;
 
@@ -109,7 +110,7 @@ public partial class MainForm : Form
     }
 
     private void CloseProgram(FormClosingEventArgs? e = null) {
-        if (MessageBox.Show("Close program?", "Are you sure?", MessageBoxButtons.YesNo) == DialogResult.Yes) {
+        if (MessageBoxUtils.ShowConfirmation("Close program?")) {
             close = true;
             Close();
         }
@@ -120,7 +121,7 @@ public partial class MainForm : Form
 
     private void ExportAsCsvButton_Click(object sender, EventArgs e) {
         if (openDatabases.Count == 0) {
-            MessageBox.Show("No database open", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBoxUtils.ShowError("No database open");
             return;
         }
         if (ExportDatabaseDialog.ShowDialog() != DialogResult.OK)
@@ -134,16 +135,10 @@ public partial class MainForm : Form
     }
 
     private void PostCsvExportCallback(Task task, string username) {
-        if (task.Exception is not null) {
-            if (MessageBox.Show($"Failed to export account {username} as CSV due to an error.\n\n\n Do you want to view technical information of the error?",
-                "Error",
-                MessageBoxButtons.YesNo) == DialogResult.Yes) {
-                MessageBox.Show(task.Exception.InnerException is null ? task.Exception.Message : task.Exception.InnerException.Message.ToString());
-            }
-        }
-        else {
+        if (task.Exception is null)
             MessageBox.Show($"Account {username} exported as CSV successfully!", "Success");
-        }
+        else
+            MessageBoxUtils.ShowException($"Failed to export account {username} due to an error", task.Exception!.InnerException ?? task.Exception);
     }
 
     private void ImportUserButton_Click(object sender, EventArgs e) {
@@ -160,16 +155,11 @@ public partial class MainForm : Form
     }
 
     private void PostImportUserCallback(Task task, string username) {
-        if (task.Exception is not null) {
-            if (MessageBox.Show($"Failed to import account {username} from CSV due to an error.\n\n\n Do you want to view technical information of the error?",
-                "Error",
-                MessageBoxButtons.YesNo) == DialogResult.Yes) {
-                MessageBox.Show(task.Exception.InnerException is null ? task.Exception.Message : task.Exception.InnerException.Message.ToString());
-            }
-            databaseManager.CloseUser(username);
-        }
-        else {
+        if (task.Exception is null)
             OpenDatabase(username);
+        else {
+            MessageBoxUtils.ShowException($"Failed to import account {username} due to an error", task.Exception!.InnerException ?? task.Exception);
+            databaseManager.DeleteUser(username);
         }
     }
 }

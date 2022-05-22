@@ -189,10 +189,6 @@ public class ExpensesDAO : IDisposable
 
     protected virtual void Dispose(bool disposing) {
         if (!Disposed) {
-            if (disposing) {
-                // TODO: dispose managed state (managed objects)
-            }
-
             dbConnection.Close();
             dbConnection.Dispose();
             categoriesTable.Dispose();

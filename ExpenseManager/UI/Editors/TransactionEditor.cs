@@ -48,14 +48,14 @@ public partial class TransactionEditor : Form
 
     private void DateField_Leave(object sender, EventArgs e) {
         if (!DateOnly.TryParse(DateField.Text, out var _)) {
-            MessageBox.Show("Date is not valid", "Error", MessageBoxButtons.OK);
+            MessageBoxUtils.ShowError("Date is not valid");
             DateField.Text = DateOnly.MinValue.ToString();
         }
     }
 
     private void AmountField_Leave(object sender, EventArgs e) {
         if (!decimal.TryParse(AmountField.Text, NumberStyles.Currency, CultureInfo.InvariantCulture, out var _)) {
-            MessageBox.Show("Amount is not valid", "Error", MessageBoxButtons.OK);
+            MessageBoxUtils.ShowError("Amount is not valid");
             AmountField.Text = "0";
         }
     }

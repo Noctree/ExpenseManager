@@ -132,7 +132,7 @@ public partial class AccountExpenses : UserControl
                 TransactionsDataGridView.Refresh();
             }
             else {
-                MessageBox.Show("Failed to modify transaction", "Error", MessageBoxButtons.OK);
+                MessageBoxUtils.ShowError("Failed to modify transaction");
             }
         }
     }
@@ -147,13 +147,13 @@ public partial class AccountExpenses : UserControl
                 TransactionsDataGridView.Refresh();
             }
             else {
-                MessageBox.Show("Failed to add transaction", "Error", MessageBoxButtons.OK);
+                MessageBoxUtils.ShowError("Failed to add transaction");
             }
         }
     }
 
     private void DeleteTransactionButton_Click(object sender, EventArgs e) {
-        if (MessageBox.Show("Delete selected transactions?", "Are you sure?", MessageBoxButtons.OKCancel) != DialogResult.OK)
+        if (!MessageBoxUtils.ShowConfirmation("Delete selected transactions?", true))
             return;
 
         var transactions = new List<Transaction>();
@@ -162,7 +162,7 @@ public partial class AccountExpenses : UserControl
             transactions.Add((Transaction)rows[i].Cells[0].Value);
         TransactionsDataGridView.RemoveRows(transactions);
         if (!DAO.DeleteTransactions(transactions))
-            MessageBox.Show("Failed to delete selected rows,\nplease close this account and reopen it", "Error", MessageBoxButtons.OK);
+            MessageBoxUtils.ShowError("Failed to delete selected rows,\nplease close this account and reopen it to continue working on it");
     }
 
     private void CloneTransactionButton_Click(object sender, EventArgs e) {

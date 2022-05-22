@@ -9,16 +9,14 @@ public partial class MainForm : Form
     private OpenDatabaseDialog openDatabaseDialog;
     private DatabaseManager databaseManager;
     private ImportAccountDialog importAccountDialog;
-    private Dictionary<string, (AccountExpenses, int)> openDatabases = new();
+    private readonly Dictionary<string, (AccountExpenses, int)> openDatabases = new();
     public bool BackendInitialized { get; private set; }
     public MainForm() {
         InitializeComponent();
         FormClosing += OnFormClosing;
     }
 
-    private void OnFormClosing(object? sender, FormClosingEventArgs e) {
-        databaseManager.CloseAllUsers();
-    }
+    private void OnFormClosing(object? sender, FormClosingEventArgs e) => databaseManager.CloseAllUsers();
 
     private void OnUIInitialized(object sender, EventArgs e) {
         OpenAccountButton.Enabled = false;
@@ -91,7 +89,6 @@ public partial class MainForm : Form
             action();
     }
 
-
     private void InvokeSafely<T>(Action<T> action, T arg) {
         if (InvokeRequired)
             Invoke(action, arg);
@@ -99,9 +96,7 @@ public partial class MainForm : Form
             action(arg);
     }
 
-    private void OnResize(object sender, EventArgs e) {
-        AccountTabsContainer.Refresh();
-    }
+    private void OnResize(object sender, EventArgs e) => AccountTabsContainer.Refresh();
 
     private void CloseProgramButton_Click(object sender, EventArgs e) {
         if (!close)
@@ -142,8 +137,9 @@ public partial class MainForm : Form
         if (task.Exception is not null) {
             if (MessageBox.Show($"Failed to export account {username} as CSV due to an error.\n\n\n Do you want to view technical information of the error?",
                 "Error",
-                MessageBoxButtons.YesNo) == DialogResult.Yes)
+                MessageBoxButtons.YesNo) == DialogResult.Yes) {
                 MessageBox.Show(task.Exception.InnerException is null ? task.Exception.Message : task.Exception.InnerException.Message.ToString());
+            }
         }
         else {
             MessageBox.Show($"Account {username} exported as CSV successfully!", "Success");
@@ -174,8 +170,9 @@ public partial class MainForm : Form
             databaseManager.DeleteUser(username);
             if (MessageBox.Show($"Failed to import account {username} from CSV due to an error.\n\n\n Do you want to view technical information of the error?",
                 "Error",
-                MessageBoxButtons.YesNo) == DialogResult.Yes)
+                MessageBoxButtons.YesNo) == DialogResult.Yes) {
                 MessageBox.Show(task.Exception.InnerException is null ? task.Exception.Message : task.Exception.InnerException.Message.ToString());
+            }
         }
         else {
             OpenDatabase(username);

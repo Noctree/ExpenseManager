@@ -3,7 +3,7 @@ namespace ExpenseManager.Utilities;
 public static class HexConverter
 {
     private const string HexChars = "0123456789ABCDEF";
-    private static readonly HashSet<char> HexCharSet = new HashSet<char>(HexChars.ToCharArray());
+    private static readonly HashSet<char> HexCharSet = new(HexChars.ToCharArray());
 
     public static bool IsValidHexString(string str) {
         if (string.IsNullOrWhiteSpace(str))
@@ -50,26 +50,20 @@ public static class HexConverter
         return builder.ToString();
     }
 
-    private static char IntToHex(int number) {
-        return HexChars[number];
-    }
+    private static char IntToHex(int number) => HexChars[number];
 
-    private static char IntToHex(byte number) {
-        return HexChars[number];
-    }
+    private static char IntToHex(byte number) => HexChars[number];
 
     private static int HexToInt(char hexChar) {
         //return ch - '0' * ((ch >= '0' && ch <= '9')? 1 : 0) - ('a' + 10) * ((ch >= 'a' && ch <= 'f')? 1 : 0) - ('A' + 10) * ((ch >= 'A' && ch <= 'F')? 1 : 0);
 
         return hexChar switch {
-            char ch when ch >= '0' && ch <= '9' => ch - '0',
-            char ch when ch >= 'a' && ch <= 'f' => ch - 'a' + 10,
-            char ch when ch >= 'A' && ch <= 'F' => ch - 'A' + 10,
+            char ch when ch is >= '0' and <= '9' => ch - '0',
+            char ch when ch is >= 'a' and <= 'f' => ch - 'a' + 10,
+            char ch when ch is >= 'A' and <= 'F' => ch - 'A' + 10,
             _ => 0,
         };
     }
 
-    private static byte HexToByte(char hexChar) {
-        return (byte)HexToInt(hexChar);
-    }
+    private static byte HexToByte(char hexChar) => (byte)HexToInt(hexChar);
 }

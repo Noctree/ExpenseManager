@@ -4,8 +4,8 @@ namespace ExpenseManager.UI;
 
 public partial class OpenDatabaseDialog : Form
 {
-    private TextboxDialog textboxDialog;
-    private DatabaseManager databaseManager;
+    private readonly TextboxDialog textboxDialog;
+    private readonly DatabaseManager databaseManager;
 
     /// <summary>
     /// Username which the user selected to open
@@ -42,13 +42,9 @@ public partial class OpenDatabaseDialog : Form
         }
     }
 
-    private void OnConfirm(object sender, EventArgs e) {
-        Finish(DialogResult.OK, (string)AccountsListView.SelectedItem);
-    }
+    private void OnConfirm(object sender, EventArgs e) => Finish(DialogResult.OK, (string)AccountsListView.SelectedItem);
 
-    private void OnCancel(object sender, EventArgs e) {
-        Finish(DialogResult.Cancel, string.Empty);
-    }
+    private void OnCancel(object sender, EventArgs e) => Finish(DialogResult.Cancel, string.Empty);
 
     private void Finish(DialogResult result, string selectedUser) {
         if (result == DialogResult.OK && databaseManager.IsUserOpen(selectedUser)) {
@@ -68,8 +64,9 @@ public partial class OpenDatabaseDialog : Form
     private void DeleteUserButton_Click(object sender, EventArgs e) {
         string username = (string)AccountsListView.SelectedItem;
         if (MessageBox.Show($"Delete account {username}?\nThis action is irreversible!", "Are you sure?", MessageBoxButtons.OKCancel) == DialogResult.OK) {
-            if (databaseManager.IsUserOpen(username))
+            if (databaseManager.IsUserOpen(username)) {
                 MessageBox.Show("Cannot delete this accout as it is currently open");
+            }
             else {
                 databaseManager.DeleteUser(username);
                 AccountsListView.Items.Remove(username);

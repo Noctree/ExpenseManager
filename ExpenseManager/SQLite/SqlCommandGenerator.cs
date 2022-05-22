@@ -2,7 +2,7 @@
 
 public static class SqlCommandGenerator
 {
-    private static StringBuilder sb = new StringBuilder();
+    private static readonly StringBuilder sb = new();
     public static string CreateTable(string name, IReadOnlyList<ISqlColumnDescriptor> columns) {
         sb.Clear();
         sb.Append("CREATE TABLE ");

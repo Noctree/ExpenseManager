@@ -9,17 +9,16 @@ public partial class AccountExpenses : UserControl
     private Panel? overlay;
     private CategoriesView? categoriesView;
     private TransactionEditor? transactionEditor;
-    private ExpensesDAO expensesDAO;
-    private DateRangePicker datePicker = new DateRangePicker();
-    private AmountPicker amountPicker = new AmountPicker();
-    private CategoryPicker categoryPicker = new CategoryPicker();
+    private readonly DateRangePicker datePicker = new();
+    private readonly AmountPicker amountPicker = new();
+    private readonly CategoryPicker categoryPicker = new();
 
-    private NumberFormatInfo numberFormatInfo;
+    private readonly NumberFormatInfo numberFormatInfo;
 
-    public ExpensesDAO DAO => expensesDAO;
+    public ExpensesDAO DAO { get; }
     public event Action<AccountExpenses>? RequestsClose;
     public AccountExpenses(ExpensesDAO dao) {
-        this.expensesDAO = dao;
+        this.DAO = dao;
         InitializeComponent();
         TransactionsDataGridView.SelectionChanged += TransactionsDataGridView_SelectionChanged;
         Disposed += CleanUp;
@@ -31,16 +30,18 @@ public partial class AccountExpenses : UserControl
         FilteredBallanceCurrencyDisplay.Text = numberFormatInfo.CurrencySymbol;
     }
 
-    public async Task PreloadDataAsync() => await TransactionsDataGridView.PreloadTransactionsAsync(expensesDAO);
+    public async Task PreloadDataAsync() => await TransactionsDataGridView.PreloadTransactionsAsync(DAO);
 
     private void CreateLoadingOverlay() {
-        overlay = new Panel();
-        overlay.Dock = DockStyle.Fill;
-        overlay.BackColor = SystemColors.Control;
-        var label = new Label();
-        label.TextAlign = ContentAlignment.MiddleCenter;
-        label.Text = "Loading...";
-        label.ForeColor = SystemColors.ControlDark;
+        overlay = new Panel {
+            Dock = DockStyle.Fill,
+            BackColor = SystemColors.Control
+        };
+        var label = new Label {
+            TextAlign = ContentAlignment.MiddleCenter,
+            Text = "Loading...",
+            ForeColor = SystemColors.ControlDark
+        };
         var font = new Font(label.Font.FontFamily, 36);
         label.Font = font;
         this.Controls.Add(overlay);
@@ -76,7 +77,7 @@ public partial class AccountExpenses : UserControl
     private void Initialize() {
         Console.WriteLine(Name + " Loaded");
         EnableLoadingOverlay();
-        TransactionsDataGridView.Initialize(expensesDAO);
+        TransactionsDataGridView.Initialize(DAO);
         DisableLoadingOverlay();
         UpdateControlButtons();
         TransactionsDataGridView.ClearSelection();
@@ -85,20 +86,16 @@ public partial class AccountExpenses : UserControl
 
     private void TransactionsDataGridView_OnRowsFiltered(object? sender, EventArgs e) => ComputeFilteredBallance();
 
-    private void ComputeTotalBallance() {
-        TotalBallanceDisplay.Text = TransactionsDataGridView.Values.Sum(transaction => transaction.Amount).ToString("n", numberFormatInfo);
-    }
+    private void ComputeTotalBallance() => TotalBallanceDisplay.Text = TransactionsDataGridView.Values.Sum(transaction => transaction.Amount).ToString("n", numberFormatInfo);
 
-    private void ComputeFilteredBallance() {
-        FilteredBallanceDisplay.Text = TransactionsDataGridView.GetVisibleValues().Sum(transaction => transaction.Amount).ToString("n", numberFormatInfo);
-    }
+    private void ComputeFilteredBallance() => FilteredBallanceDisplay.Text = TransactionsDataGridView.GetVisibleValues().Sum(transaction => transaction.Amount).ToString("n", numberFormatInfo);
 
     private void OpenCategoriesPanel_Click(object sender, EventArgs e) {
         if (categoriesView is null) {
             categoriesView = new CategoriesView();
             categoriesView.CategoriesModified += OnCategoriesModified;
         }
-        categoriesView.Show(expensesDAO);
+        categoriesView.Show(DAO);
     }
 
     private void OnCategoriesModified() => TransactionsDataGridView.Refresh();
@@ -111,9 +108,7 @@ public partial class AccountExpenses : UserControl
             (child as Control)?.Dispose();
     }
 
-    private void CloseDatabaseButton_Click(object sender, EventArgs e) {
-        RequestsClose?.Invoke(this);
-    }
+    private void CloseDatabaseButton_Click(object sender, EventArgs e) => RequestsClose?.Invoke(this);
 
     private void TransactionsDataGridView_SelectionChanged(object? sender, EventArgs e) => UpdateControlButtons();
 
@@ -127,7 +122,7 @@ public partial class AccountExpenses : UserControl
         var selectedRow = TransactionsDataGridView.SelectedRows[0];
         var transaction = (Transaction)selectedRow.Cells[0].Value;
         if (transactionEditor is null)
-            transactionEditor = new TransactionEditor(expensesDAO);
+            transactionEditor = new TransactionEditor(DAO);
         var oldTransactionId = transaction.Category.Id;
         if (transactionEditor.ShowDialog(transaction) == DialogResult.OK) {
             if (DAO.UpdateTransaction(transaction)) {
@@ -136,22 +131,24 @@ public partial class AccountExpenses : UserControl
                 }
                 TransactionsDataGridView.Refresh();
             }
-            else
+            else {
                 MessageBox.Show("Failed to modify transaction", "Error", MessageBoxButtons.OK);
+            }
         }
     }
 
     private void NewTransactionButton_Click(object sender, EventArgs e) {
         var transaction = new Transaction(DateOnly.FromDateTime(DateTime.Today), 0, DAO.DefaultCategory);
         if (transactionEditor is null)
-            transactionEditor = new TransactionEditor(expensesDAO);
+            transactionEditor = new TransactionEditor(DAO);
         if (transactionEditor.ShowDialog(transaction) == DialogResult.OK) {
-            if (expensesDAO.AddTransaction(transaction, out var addedTransaction)) {
+            if (DAO.AddTransaction(transaction, out var addedTransaction)) {
                 TransactionsDataGridView.AddRow(addedTransaction!);
                 TransactionsDataGridView.Refresh();
             }
-            else
+            else {
                 MessageBox.Show("Failed to add transaction", "Error", MessageBoxButtons.OK);
+            }
         }
     }
 
@@ -177,9 +174,7 @@ public partial class AccountExpenses : UserControl
         TransactionsDataGridView.AddRows(addedTransactions);
     }
 
-    private void ClearFilters_Click(object sender, EventArgs e) {
-        TransactionsDataGridView.ClearFilter();
-    }
+    private void ClearFilters_Click(object sender, EventArgs e) => TransactionsDataGridView.ClearFilter();
 
     private void FilterByDateButton_Click(object sender, EventArgs e) {
         if (datePicker.ShowDialog() == DialogResult.OK) {

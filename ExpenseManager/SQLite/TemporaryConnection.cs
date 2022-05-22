@@ -5,7 +5,7 @@
 /// </summary>
 public class TemporaryConnection : IDisposable
 {
-    private SQLiteConnection connection;
+    private readonly SQLiteConnection connection;
     public TemporaryConnection(SQLiteConnection connection) {
         this.connection = connection;
         connection.Open();

@@ -3,8 +3,8 @@
 namespace ExpenseManager.UI.Components;
 public class DataGridViewTransactionAmountCell : DataGridViewGenericTextBoxCell<Transaction>
 {
-    private readonly static Color NegativeBallanceColor = Color.FromArgb(204, 47, 47);
-    private readonly static Color PositiveBallanceColor = Color.FromArgb(64, 132, 0);
+    private static readonly Color NegativeBallanceColor = Color.FromArgb(204, 47, 47);
+    private static readonly Color PositiveBallanceColor = Color.FromArgb(64, 132, 0);
 
     public DataGridViewTransactionAmountCell() {
         TextFormatter = transaction => transaction.Amount.ToString();

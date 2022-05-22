@@ -6,13 +6,7 @@ public class CategoryDataGridView : DataGridClassView<Category>
 {
     private static readonly DataGridViewTextBoxCell DefaultCellTemplate = new();
     private ExpensesDAO? expensesDAO;
-    public ExpensesDAO ExpensesDAO {
-        get {
-            if (expensesDAO is null)
-                throw new ApplicationException("DataView not initialized");
-            return expensesDAO;
-        }
-    }
+    public ExpensesDAO ExpensesDAO => expensesDAO is null ? throw new ApplicationException("DataView not initialized") : expensesDAO;
     public bool Initialized { get; private set; }
 
     public CategoryDataGridView() {

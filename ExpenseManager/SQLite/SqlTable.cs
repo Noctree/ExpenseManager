@@ -2,24 +2,23 @@
 
 public class SqlTable : IDisposable
 {
-    private SqlTableDescriptor descriptor;
     private bool disposedValue;
 
     public SQLiteConnection Connection { get; }
     public string TableName { get; }
-    public SqlTableDescriptor TableDescriptor => descriptor;
-    public IReadOnlyList<ISqlColumnDescriptor> ColumnTypes => descriptor.Descriptors;
-    public IReadOnlyList<string> ColumnNames => descriptor.Names;
+    public SqlTableDescriptor TableDescriptor { get; private set; }
+    public IReadOnlyList<ISqlColumnDescriptor> ColumnTypes => TableDescriptor.Descriptors;
+    public IReadOnlyList<string> ColumnNames => TableDescriptor.Names;
     public SqlTable(SQLiteConnection databaseConnection, string name, SqlTableDescriptor tableDescriptor) {
         TableName = name;
         Connection = databaseConnection;
-        descriptor = tableDescriptor;
+        TableDescriptor = tableDescriptor;
     }
     public bool Create() {
         using (var tempConnection = Connection.OpenAsTemporaryConnection()) {
             if (ContainsTable(Connection, TableName))
                 return false;
-            string command = SqlCommandGenerator.CreateTable(TableName, descriptor.Descriptors);
+            string command = SqlCommandGenerator.CreateTable(TableName, TableDescriptor.Descriptors);
             var sqlCommand = new SQLiteCommand(command, Connection);
             sqlCommand.ExecuteNonQueryWithLogging();
             sqlCommand.Dispose();
@@ -27,11 +26,11 @@ public class SqlTable : IDisposable
         return true;
     }
 
-    public bool ContainsColumn(string name) => descriptor.ContainsDescriptorWithName(name);
+    public bool ContainsColumn(string name) => TableDescriptor.ContainsDescriptorWithName(name);
 
     public List<object[]> GetRow(IReadOnlyList<string> columnNames) {
         var results = new List<object[]>();
-        var descriptors = descriptor.GetDescriptorsByNames(columnNames);
+        var descriptors = TableDescriptor.GetDescriptorsByNames(columnNames);
         using (var _ = Connection.OpenAsTemporaryConnection()) {
             var sqlCommand = SqlCommandGenerator.CreateSelectCommand(this, columnNames);
             var command = Connection.CreateCommand();
@@ -49,7 +48,7 @@ public class SqlTable : IDisposable
 
     public List<object[]> GetRowsWhere(string predicate, IReadOnlyList<string> columnNames) {
         var results = new List<object[]>();
-        var descriptors = descriptor.GetDescriptorsByNames(columnNames);
+        var descriptors = TableDescriptor.GetDescriptorsByNames(columnNames);
         using (var _ = Connection.OpenAsTemporaryConnection()) {
             var command = Connection.CreateCommand();
             command.CommandText = SqlCommandGenerator.CreateSelectCommandWithPredicate(this, columnNames, predicate);
@@ -172,14 +171,13 @@ public class SqlTable : IDisposable
         return result;
     }
 
-
     protected virtual void Dispose(bool disposing) {
         if (!disposedValue) {
             if (disposing) {
                 // TODO: dispose managed state (managed objects)
             }
 
-            descriptor = null!;
+            TableDescriptor = null!;
             Connection.Dispose();
             disposedValue = true;
         }

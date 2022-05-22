@@ -4,15 +4,13 @@ using ExpenseManager.Utilities;
 namespace ExpenseManager.DataObjects.Conversion;
 public class CsvCategoryReconstructor : IObjectCsvReconstructor<Category>
 {
-    private Category category = new Category(Category.Default);
+    private Category category = new(Category.Default);
     public int FieldCount => 3;
 
     public int RequiredFieldCount => 3;
 
     public Category ReconstructObject() => category;
-    public void Reset() {
-        category = new Category(Category.Default);
-    }
+    public void Reset() => category = new Category(Category.Default);
     public void SetFieldFromString(int fieldIndex, string value) {
         switch (fieldIndex) {
             case 0:

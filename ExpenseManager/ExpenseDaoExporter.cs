@@ -11,9 +11,7 @@ public static class ExpenseDaoExporter
         await CsvExporter.ExportAsync(categoriesFileName, new CsvCategoryDeconstructor(dao.CategoryDeconstructor.ColumnNames), dao.GetCategories().Skip(1)); //Skip the 1st default category, as it supposed to be hidden from the user and gets added by default anyway
     }
 
-    public static string GetCategoryFileName(string filePath) {
-        return Path.Combine(Path.GetDirectoryName(filePath) ?? string.Empty, Path.GetFileNameWithoutExtension(filePath) + "-categories.csv");
-    }
+    public static string GetCategoryFileName(string filePath) => Path.Combine(Path.GetDirectoryName(filePath) ?? string.Empty, Path.GetFileNameWithoutExtension(filePath) + "-categories.csv");
 
     public static async Task ImportExpensesDaoAsync(string transactionsFilePath, string categoriesFilePath, string username, DatabaseManager dbManager) {
         dbManager.CreateNewUser(username);

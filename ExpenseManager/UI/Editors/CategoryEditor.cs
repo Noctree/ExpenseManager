@@ -3,7 +3,7 @@
 namespace ExpenseManager.UI;
 public partial class CategoryEditor : Form
 {
-    private ExpensesDAO expensesDAO;
+    private readonly ExpensesDAO expensesDAO;
     private Category category;
     public CategoryEditor(ExpensesDAO dao) {
         expensesDAO = dao;

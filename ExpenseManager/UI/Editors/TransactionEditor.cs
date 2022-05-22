@@ -5,9 +5,9 @@ using ExpenseManager.UI.Components;
 namespace ExpenseManager.UI;
 public partial class TransactionEditor : Form
 {
-    private ExpensesDAO dao;
+    private readonly ExpensesDAO dao;
     private Transaction transaction;
-    private DateDialog datePicker = new DateDialog();
+    private readonly DateDialog datePicker = new();
     private CategoryList categoryList;
     public TransactionEditor(ExpensesDAO dao) {
         this.dao = dao;

@@ -17,9 +17,9 @@ public class DataGridViewGenericTextBoxCell<T> : DataGridViewTextBoxCell
     }
 
     protected override bool SetValue(int rowIndex, object value) {
-        if (value is not null && value is not T)
-            throw new ArgumentException($"Cell only accepts objects of type {typeof(T).Name}, value was {value} ({value.GetType().Name})");
-        return base.SetValue(rowIndex, value);
+        return value is not null and not T
+            ? throw new ArgumentException($"Cell only accepts objects of type {typeof(T).Name}, value was {value} ({value.GetType().Name})")
+            : base.SetValue(rowIndex, value);
     }
 
     protected override void Paint(Graphics graphics, Rectangle clipBounds, Rectangle cellBounds, int rowIndex, DataGridViewElementStates cellState, object value, object formattedValue, string errorText, DataGridViewCellStyle cellStyle, DataGridViewAdvancedBorderStyle advancedBorderStyle, DataGridViewPaintParts paintParts) {
@@ -32,11 +32,7 @@ public class DataGridViewGenericTextBoxCell<T> : DataGridViewTextBoxCell
             return;
         }
         T realValue = (T)value;
-        string stringRepresentation;
-        if (TextFormatter is null)
-            stringRepresentation = realValue.ToString() ?? string.Empty;
-        else
-            stringRepresentation = TextFormatter(realValue);
+        string stringRepresentation = TextFormatter is null ? realValue.ToString() ?? string.Empty : TextFormatter(realValue);
         base.Paint(graphics, clipBounds, cellBounds, rowIndex, cellState, stringRepresentation, stringRepresentation, errorText, cellStyle, advancedBorderStyle, paintParts);
     }
 }

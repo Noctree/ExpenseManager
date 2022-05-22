@@ -2,8 +2,8 @@
 
 public class SqlTableDescriptor
 {
-    private List<ISqlColumnDescriptor> descriptors;
-    private List<string> names;
+    private readonly List<ISqlColumnDescriptor> descriptors;
+    private readonly List<string> names;
 
     public ISqlColumnDescriptor PrimaryKey { get; }
     public IReadOnlyList<ISqlColumnDescriptor> Descriptors => descriptors.AsReadOnly();

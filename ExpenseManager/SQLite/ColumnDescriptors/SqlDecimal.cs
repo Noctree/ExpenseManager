@@ -22,6 +22,5 @@ public class SqlDecimal : ISqlColumnDescriptor, ISqlConverter<decimal>
 
     public string ToSql(object value) => ToSql((decimal)value);
 
-
     object ISqlConverter.FromSql(object sqlValue) => FromSql((decimal)sqlValue);
 }

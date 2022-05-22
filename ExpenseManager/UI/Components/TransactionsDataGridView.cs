@@ -8,13 +8,7 @@ public class TransactionsDataGridView : DataGridClassView<Transaction>
 
     private ExpensesDAO? expensesDAO;
     private List<Transaction>? transactions;
-    public ExpensesDAO ExpensesDAO {
-        get {
-            if (expensesDAO is null)
-                throw new ApplicationException("DataView not initialized");
-            return expensesDAO;
-        }
-    }
+    public ExpensesDAO ExpensesDAO => expensesDAO is null ? throw new ApplicationException("DataView not initialized") : expensesDAO;
     public bool Initialized { get; private set; }
 
     private void InitializeColumns() {
@@ -60,7 +54,5 @@ public class TransactionsDataGridView : DataGridClassView<Transaction>
         RegisterColumnSortComparer(1, (a, b) => a.Amount.CompareTo(b.Amount));
     }
 
-    private void RegisterColumnValueSelectors() {
-        RegisterColumnValueSelector(2, transaction => transaction.Category);
-    }
+    private void RegisterColumnValueSelectors() => RegisterColumnValueSelector(2, transaction => transaction.Category);
 }

@@ -15,12 +15,11 @@ public class ExpensesDAO : IDisposable
     private CategoryList? cachedCategories;
     private bool categoriesChanged;
 
-    private bool disposedValue;
     public IObjectSqlDeconstructor<Transaction> TransactionDeconstructor { get; }
     public IObjectSqlDeconstructor<Category> CategoryDeconstructor { get; }
     public IObjectSqlReconstructor<Transaction> TransactionReconstructor { get; }
     public IObjectSqlReconstructor<Category> CategoryReconstructor { get; }
-    public bool Disposed => disposedValue;
+    public bool Disposed { get; private set; }
 
     public string Name => dbConnection.DataSource;
     public Category DefaultCategory { get; }
@@ -37,18 +36,13 @@ public class ExpensesDAO : IDisposable
         TransactionReconstructor = new SqlTransactionReconstructor();
 
         var globalDefaultCategory = Category.Default;
-        if (categoriesTable.Create()) {
-            if (AddCategory(globalDefaultCategory, out var addedDefaultCategory))
-                DefaultCategory = addedDefaultCategory!;
-            else
-                throw new ApplicationException("Failed to create default category");
-        }
-        else {
-            if (TryGetCategory(globalDefaultCategory.Name, out var localDefaultCategory))
-                DefaultCategory = localDefaultCategory;
-            else
-                throw new ApplicationException("Failed to load default category");
-        }
+        DefaultCategory = categoriesTable.Create()
+            ? AddCategory(globalDefaultCategory, out var addedDefaultCategory)
+                ? addedDefaultCategory
+                : throw new ApplicationException("Failed to create default category")
+            : TryGetCategory(globalDefaultCategory.Name, out var localDefaultCategory)
+                ? localDefaultCategory
+                : throw new ApplicationException("Failed to load default category");
         transactionsTable.Create();
     }
 
@@ -166,9 +160,11 @@ public class ExpensesDAO : IDisposable
         if (transactions.Count == 1)
             return DeleteTransaction(transactions[0]);
         var result = transactionsTable.DeleteRows(TransactionDeconstructor, transactions) == transactions.Count;
-        if (result)
+        if (result) {
             foreach (var transaction in transactions)
                 transaction.Invalidate();
+        }
+
         return result;
     }
     public bool DeleteCategories(IReadOnlyList<Category> categories) {
@@ -179,15 +175,17 @@ public class ExpensesDAO : IDisposable
         foreach (var category in categories)
             transactionsTable.ExecuteRawSQL($"UPDATE {transactionsTable.TableName} SET category = {DefaultCategory.Id} WHERE category = {category.Id ?? -1};");
         var result = transactionsTable.DeleteRows(CategoryDeconstructor, categories) == categories.Count;
-        if (result)
+        if (result) {
             foreach (var category in categories)
                 category.Invalidate();
+        }
+
         categoriesChanged = true;
         return result;
     }
 
     protected virtual void Dispose(bool disposing) {
-        if (!disposedValue) {
+        if (!Disposed) {
             if (disposing) {
                 // TODO: dispose managed state (managed objects)
             }
@@ -195,7 +193,7 @@ public class ExpensesDAO : IDisposable
             dbConnection.Dispose();
             categoriesTable.Dispose();
             transactionsTable.Dispose();
-            disposedValue = true;
+            Disposed = true;
         }
     }
     ~ExpensesDAO() {

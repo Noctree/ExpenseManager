@@ -6,7 +6,7 @@ internal static class SqlColumnDescriptorConverter
     private const string NotNullKeyword = "NOT NULL";
     private const string AutoIncrementKeyword = "AUTOINCREMENT";
     private const string PrimaryKeyKeyword = "PRIMARY KEY";
-    private static StringBuilder sb = new StringBuilder();
+    private static readonly StringBuilder sb = new();
     public static string ToSqlColumnDefinition(ISqlColumnDescriptor value) {
         const char space = ' ';
         sb.Clear();

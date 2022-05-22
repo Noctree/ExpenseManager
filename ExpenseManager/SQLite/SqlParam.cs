@@ -15,10 +15,11 @@ public readonly struct SqlParam
         value = Value;
     }
 
-    public static implicit operator SqlParam((string, object) tuple) => new SqlParam(tuple.Item1, tuple.Item2);
+    public static implicit operator SqlParam((string, object) tuple) => new(tuple.Item1, tuple.Item2);
     public static implicit operator SQLiteParameter(SqlParam param) {
-        var sqlParam = new SQLiteParameter(param.Name);
-        sqlParam.Value = param.Value;
+        var sqlParam = new SQLiteParameter(param.Name) {
+            Value = param.Value
+        };
         return sqlParam;
     }
 }

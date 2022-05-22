@@ -49,8 +49,9 @@ public partial class CategoriesView : Form
                 CategoryDataGridView.Refresh();
                 CategoriesModified?.Invoke();
             }
-            else
+            else {
                 MessageBox.Show("Failed to modify category", "Error", MessageBoxButtons.OK);
+            }
         }
     }
     private void CategoryDataGridView_SelectionChanged(object? sender, EventArgs e) => UpdateControls();
@@ -64,8 +65,9 @@ public partial class CategoriesView : Form
                 CategoryDataGridView.AddRow(addedCategory!);
                 CategoryDataGridView.Refresh();
             }
-            else
+            else {
                 MessageBox.Show("Failed to add category", "Error", MessageBoxButtons.OK);
+            }
         }
     }
 

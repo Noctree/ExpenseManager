@@ -25,9 +25,7 @@ public class Category
 
     public void Invalidate() => Id = -1;
 
-    public override string ToString() {
-        return $"{Name} | {Description} | {Color}";
-    }
+    public override string ToString() => $"{Name} | {Description} | {Color}";
 
     public override bool Equals(object? obj) => obj is Category category && Id == category.Id;
     public override int GetHashCode() => HashCode.Combine(Id);

@@ -13,6 +13,6 @@ public interface ISqlConverter
 
 public interface ISqlConverter<T> : ISqlConverter
 {
-    new public T FromSql(object sqlValue);
+    public new T FromSql(object sqlValue);
     public string ToSql(T value);
 }

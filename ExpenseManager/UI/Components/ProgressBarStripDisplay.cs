@@ -2,7 +2,7 @@
 
 public class ProgressBarStripDisplay : ToolStrip
 {
-    private List<ProgressBarContainer> progressBars = new List<ProgressBarContainer>();
+    private readonly List<ProgressBarContainer> progressBars = new();
     public int ProgressBarWidth { get; set; } = 100;
 
     public ProgressBarContainer AddProgressBar(string taskName, ProgressBarStyle progressBarStyle = ProgressBarStyle.Continuous) {
@@ -46,10 +46,10 @@ public class ProgressBarStripDisplay : ToolStrip
 
     public class ProgressBarContainer : IDisposable
     {
-        private ProgressBarStripDisplay parent;
-        private ToolStripProgressBar progressBar;
-        private ToolStripSeparator separator;
-        private ToolStripLabel label;
+        private readonly ProgressBarStripDisplay parent;
+        private readonly ToolStripProgressBar progressBar;
+        private readonly ToolStripSeparator separator;
+        private readonly ToolStripLabel label;
         private bool disposedValue;
 
         public ProgressBarContainer(ProgressBarStripDisplay parent, ToolStripProgressBar progressBar, ToolStripSeparator separator, ToolStripLabel label) {

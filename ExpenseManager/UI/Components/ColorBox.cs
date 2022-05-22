@@ -1,9 +1,9 @@
 ﻿namespace ExpenseManager.UI;
 internal class ColorBox : Control
 {
-    private ColorDialog dialog = new ColorDialog();
-    private SolidBrush brush = new SolidBrush(Color.White);
-    private Pen borderPen = new Pen(Color.Black, 1);
+    private readonly ColorDialog dialog = new();
+    private readonly SolidBrush brush = new(Color.White);
+    private readonly Pen borderPen = new(Color.Black, 1);
     private Color color = Color.White;
     public Color SelectedColor {
         get => color;

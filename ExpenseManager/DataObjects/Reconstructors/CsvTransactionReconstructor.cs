@@ -4,8 +4,8 @@ using ExpenseManager.CSV;
 namespace ExpenseManager.DataObjects.Conversion;
 internal class CsvTransactionReconstructor : IObjectCsvReconstructor<Transaction>
 {
-    private Dictionary<long, Category> categories;
-    private Transaction transaction = new Transaction(DateOnly.MinValue, 0, Category.Default);
+    private readonly Dictionary<long, Category> categories;
+    private Transaction transaction = new(DateOnly.MinValue, 0, Category.Default);
     public int FieldCount => 4;
 
     public int RequiredFieldCount => 4;

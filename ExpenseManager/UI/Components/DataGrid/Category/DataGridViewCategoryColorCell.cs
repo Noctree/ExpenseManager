@@ -4,7 +4,7 @@ namespace ExpenseManager.UI.Components;
 
 public class DataGridViewCategoryColorCell : DataGridViewCategoryCell
 {
-    private SolidBrush brush = new SolidBrush(Color.White);
+    private readonly SolidBrush brush = new(Color.White);
 
     protected override void OnValueUpdate(Category category) => brush.Color = category.Color;
 

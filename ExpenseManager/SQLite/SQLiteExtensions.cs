@@ -12,9 +12,7 @@ public static class SQLiteExtensions
     /// </summary>
     /// <param name="connection"></param>
     /// <returns>TemporaryConnection wrapper</returns>
-    public static TemporaryConnection OpenAsTemporaryConnection(this SQLiteConnection connection) {
-        return new TemporaryConnection(connection);
-    }
+    public static TemporaryConnection OpenAsTemporaryConnection(this SQLiteConnection connection) => new(connection);
 
     /// <summary>
     /// Finds column descriptor by name

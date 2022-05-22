@@ -25,9 +25,7 @@ public class Transaction
 
     public void Invalidate() => Id = null;
 
-    public override string ToString() {
-        return $"{Date} | {Amount} | {Category.Name} | {Description}";
-    }
+    public override string ToString() => $"{Date} | {Amount} | {Category.Name} | {Description}";
 
     public override bool Equals(object? obj) => obj is Transaction transaction && Id == transaction.Id;
     public override int GetHashCode() => HashCode.Combine(Id);

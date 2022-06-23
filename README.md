@@ -3,4 +3,4 @@ A personal expense manager used for keeping track of your expenses. Made as a se
 
 Supports multiple accounts, transaction categories and filtering.
 
-#DEFINITELY NOT BUG FREE (and many parts are rather botched together)
+# DEFINITELY NOT BUG FREE (and many parts are rather botched together)
